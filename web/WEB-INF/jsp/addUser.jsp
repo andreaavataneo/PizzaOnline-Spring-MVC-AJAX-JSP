@@ -33,7 +33,7 @@
         
 	  $.ajax({  
 	    type: "POST",  
-	    url: "addUser.htm",  
+	    url: "registrationConfirm.htm",  
 	    data: "email="+mail+"&pwd="+pwd+"&name"+name+"&addr"+addr,  
 	    success: function(response){  
 	      // we have the response  
@@ -51,11 +51,11 @@
         <article>            
             <table>   
                  <form:form commandName="user">
-                    <tr><td><p><label for=name>Nome: </label></p></td><td><form:input path="name" id="name" type="text" value="Nome"/></td><td><p class="error" id="name_err">Non hai inserito il nome!</p></td></tr>
-                    <tr><td><p><label for=adress>Indirizzo: </label></p></td><td><form:input path="address" id="addr" type="text" value="Indirizzo"/><td><p class="error" id="addr_err">Non hai inserito l'indirizzo!</p></td></td></tr>
-                    <tr><td><p><label for=email>Email: </label></p></td><td><form:input path="email" id="email" type="email" value="Email"/></td><td><p class="error" id="email_err">Non hai inserito l'emmail!</p></td></tr>
-                    <tr><td><p><label for=user>Password: </label> </p></td><td><form:input path="pwd" id="pwd" type="password" value="password"/></td><td><p class="error" id="pwd_err">Non hai inserito la password!</p></td></tr>
-                    <tr><td><input type="button" onclick="doAjaxPost();" value="Invia richiesta"></tr>
+                    <tr><td><p><label for=name>Nome: </label></p></td><td><form:input path="name" id="name" type="text" value="Nome"/></td><td><p class="error" id="name_err"></p></td></tr>
+                    <tr><td><p><label for=adress>Indirizzo: </label></p></td><td><form:input path="address" id="addr" type="text" value="Indirizzo"/><td><p class="error" id="addr_err"></p></td></td></tr>
+                    <tr><td><p><label for=email>Email: </label></p></td><td><form:input path="email" id="email" type="email" value="Email"/></td><td><p class="error" id="email_err"></p></td></tr>
+                    <tr><td><p><label for=user>Password: </label> </p></td><td><form:input path="pwd" id="pwd" type="password" value="password"/></td><td><p class="error" id="pwd_err"></p></td></tr>
+                    <tr><td><input type="button" onClick="doAjaxPost();" value="Invia richiesta"></tr>
                  </form:form>
             </table>
                 <p id="info"></p>

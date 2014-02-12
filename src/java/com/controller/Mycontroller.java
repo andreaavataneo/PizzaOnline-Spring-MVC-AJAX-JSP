@@ -68,7 +68,7 @@ public class Mycontroller {
         return maw.addObject("message", s);
     }
     
-    @RequestMapping(value="/addUser", method=RequestMethod.GET)
+    @RequestMapping(value="/registrationConfirm", method=RequestMethod.GET)
     @ResponseBody
     public String addUser(@ModelAttribute(value="user") User user, BindingResult result){
       String returnText;
