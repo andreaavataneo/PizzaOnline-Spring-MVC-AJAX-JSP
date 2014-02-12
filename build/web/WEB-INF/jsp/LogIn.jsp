@@ -7,36 +7,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-    "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html">
 <html>
      <head>
-       <%@include file="../../resources/common/header.jsp" %>
-        <script type="text/javascript">
-            
-          //metodo figo ma che non riesco a far funzionare  
-          /**$(document).ready(function() {
-               var doAjaxPost = function() {
-                   $(".ajaxForm").submit(function() {
-                       var data = $(this).serialize();
-                       $.ajax({
-                           type : $(this).attr("method"),
-                           url : $(this).attr("action"),
-                           data : data,
-                           succes : function(data){
-                               $("#info").html(data);                               
-                           },
-                           error : function(e){                               
-                               alert("Error: "+e);
-                           }
-                       });
-                      
-                   });
-          }
-               doAjaxPost();
-           }); **/     
-         </script>
-        
+       <%@include file="../../resources/common/header.jsp" %>       
     </head>
     <body>
     <script type="text/javascript">

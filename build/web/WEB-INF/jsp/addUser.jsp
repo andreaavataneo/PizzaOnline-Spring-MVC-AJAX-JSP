@@ -7,7 +7,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<!DOCTYPE html>
+<!DOCTYPE html">
 <html>
     <head>
         <%@include file="../../resources/common/header.jsp" %>
@@ -20,7 +20,17 @@
           var pwd = $('#pwd').val();
           var name = $('#name');
           var addr = $('#addr');
-	   
+	  
+          if(mail===""){
+              $('#email_error').html("Non hai inserito l'email!");
+          }else if(name===""){
+              $('#name_error').html("Non hai inserito il nome!");
+          }else if(pwd===""){
+              $('#pwd_error').html("Non hai inserito la password!");
+          }else if(addr===""){
+              $('#addr_error').html("Non hai inserito l'indirizzo!");
+          }else{
+        
 	  $.ajax({  
 	    type: "POST",  
 	    url: "addUser.htm",  
@@ -32,7 +42,8 @@
 	    error: function(e){  
 	      alert('Error: ' + e);  
 	    }  
-	  });  
+	  });
+          }
          }
         </script>
         <h1>Pizzeria</h1>
@@ -44,7 +55,7 @@
                     <tr><td><p><label for=adress>Indirizzo: </label></p></td><td><form:input path="address" id="addr" type="text" value="Indirizzo"/><td><p class="error" id="addr_err">Non hai inserito l'indirizzo!</p></td></td></tr>
                     <tr><td><p><label for=email>Email: </label></p></td><td><form:input path="email" id="email" type="email" value="Email"/></td><td><p class="error" id="email_err">Non hai inserito l'emmail!</p></td></tr>
                     <tr><td><p><label for=user>Password: </label> </p></td><td><form:input path="pwd" id="pwd" type="password" value="password"/></td><td><p class="error" id="pwd_err">Non hai inserito la password!</p></td></tr>
-                    <tr><td><input type="button" onclick="doAjaxPost()" value="Invia richiesta"></tr>
+                    <tr><td><input type="button" onclick="doAjaxPost();" value="Invia richiesta"></tr>
                  </form:form>
             </table>
                 <p id="info"></p>

@@ -72,17 +72,12 @@ public class Mycontroller {
     @ResponseBody
     public String addUser(@ModelAttribute(value="user") User user, BindingResult result){
       String returnText;
-      if(user.getAddress()==null){returnText="Non hai inserito l'indirizzo!";}
-      else if(user.getEmail()==null){returnText="Non hai inserito l'email!";}      
-      else if(user.getPwd()==null){returnText="Non hai inseito la password";}
-      else if(user.getName()==null){returnText="Non hai inserito il nome!";}
-      else{
-          DB jdbc = new DB();
-          if(jdbc.checkMail(user.getEmail())){
+      DB jdbc = new DB();
+      if(jdbc.checkMail(user.getEmail())){
           jdbc.addUser(user.getName(), user.getEmail(), user.getAddress(), user.getPwd()); 
           returnText="Inserimento effettuato con successo!";}
-          else{returnText="C'è già una registrazione con questa email!";}          
-      }
+          else{returnText="C'è già una registrazione con questa email!";}
+          
       return returnText;
     }
 }
