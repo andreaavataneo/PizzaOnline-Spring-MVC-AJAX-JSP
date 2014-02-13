@@ -14,7 +14,7 @@
     <body>
         <h1>Pizzeria</h1>      
         <article>            
-            <p>${menu}</p>
+            ${menu}
         </article>
         <nav> 
             <%@include file="../../resources/common/menu.jsp" %>            

@@ -3,27 +3,32 @@
  * and open the template in the editor.
  */
 package com.service;
+
 import java.sql.*;
+
 /**
  *
  * @author Andrea
  */
 public class DB {
-    
-    private static final String ur = "jdbc:derby://localhost:1527/sample";
+
+    private static final String ur = "jdbc:derby://localhost:1527/pizzeria";
     private static final String us = "app";
     private static final String pwd = "app";
-    
-    public String showMenu(){
-        String out="";
-          try {
+
+    public String showMenu() {
+        String out;
+        try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
-            Statement st = conn.createStatement();            
-            ResultSet rs= st.executeQuery("SELECT * FROM PIZZE");
-            while(rs.next()){
-            out=out+"Nome: "+rs.getString("name")+" Descrizione: "+rs.getString("description")+"<br>";
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS");
+            out = "<table><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td></tr>";
+            while (rs.next()) {
+
+                out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td></tr>";
             }
+            out = out + "</table>";
             st.close();
             conn.close();
         } catch (SQLException e) {
@@ -31,17 +36,20 @@ public class DB {
         }
         return out;
     }
-    
-    public boolean logger(String n,String p){
+
+    public boolean logger(String mail, String pwd) {
         boolean out;
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
-            Statement st = conn.createStatement();            
-            ResultSet rs= st.executeQuery("SELECT * FROM USERS WHERE (NAME='"+n+"') AND (PASSWORD='"+p+"')");
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM USERS WHERE (EMAIL='" + mail + "') AND (PASSWORD='" + pwd + "')");
             rs.next();
-            if(rs.getRow()==1){out=true;}
-            else out=false;
+            if (rs.getRow() == 1) {
+                out = true;
+            } else {
+                out = false;
+            }
             st.close();
             conn.close();
             rs.close();
@@ -50,37 +58,42 @@ public class DB {
         }
         return out;
     }
-    
-    public void addUser(String name, String email, String addr, String pwd){
-        
+
+    public boolean addUser(String name, String surname, String phone, String email, String addr, String pwd) {
+
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
-            Statement st = conn.createStatement();            
-            ResultSet rs= st.executeQuery("INSERT INTO USERS");           
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("INSERT INTO users(nameU, surname, password, address, phone, admin, email) VALUES ('" + name + "', '" + surname + "', '" + pwd + "', '" + addr + "', '" + phone + "',false, '" + email + "')");
             st.close();
             conn.close();
-            rs.close();          
-        } catch (SQLException e) {     }        
+            rs.close();
+        } catch (SQLException e) {
+            return false;
+        }
+        return true;
     }
-     
-    public boolean checkMail(String email){
+
+    public boolean checkMail(String email) {
         boolean out;
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
-            Statement st = conn.createStatement();            
-            ResultSet rs= st.executeQuery("SELECT * FROM USERS WHERE (EMAIL='"+email+"')");
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM USERS WHERE (EMAIL='" + email + "')");
             rs.next();
-            if(rs.getRow()==0){out=true;}
-            else out=false;
+            if (rs.getRow() == 0) {
+                out = true;
+            } else {
+                out = false;
+            }
             st.close();
             conn.close();
-            rs.close();          
-        } catch (SQLException e) { out=false; } 
-        return out;      
+            rs.close();
+        } catch (SQLException e) {
+            out = false;
+        }
+        return out;
     }
-   
-  
-   
 }

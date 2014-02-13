@@ -43,22 +43,7 @@ public class Mycontroller {
         return maw;
     }
     
-    /**
-     *
-     * @param user
-     * @param result
-     * @return
-     */
-    @RequestMapping(value="/LogIn", method = RequestMethod.POST) 
-    @ResponseBody  
-    public  String logger(@ModelAttribute(value="user") User user, BindingResult result){
-        String returnText;
-        DB jdbc = new DB(); //istanzio un oggetto DB
-        if(result.hasErrors()){returnText="Errore nell'interazione Ajax.";}
-        else if(jdbc.logger(user.getEmail(), user.getPwd())){ returnText=user.getEmail()+" hai effettuato l'acceso con successo!"; }//messaggio di conferma
-        else{returnText="Nome utente o password "+user.getPwd()+" errati!";}                    //messaggio di errore
-        return returnText;  
-    }
+    
     
     @RequestMapping(value="/addUser", method=RequestMethod.GET)
     public ModelAndView addUser(){
@@ -68,17 +53,6 @@ public class Mycontroller {
         return maw.addObject("message", s);
     }
     
-    @RequestMapping(value="/registrationConfirm", method=RequestMethod.GET)
-    @ResponseBody
-    public String addUser(@ModelAttribute(value="user") User user, BindingResult result){
-      String returnText;
-      DB jdbc = new DB();
-      if(jdbc.checkMail(user.getEmail())){
-          jdbc.addUser(user.getName(), user.getEmail(), user.getAddress(), user.getPwd()); 
-          returnText="Inserimento effettuato con successo!";}
-          else{returnText="C'è già una registrazione con questa email!";}
-          
-      return returnText;
-    }
+   
 }
 
