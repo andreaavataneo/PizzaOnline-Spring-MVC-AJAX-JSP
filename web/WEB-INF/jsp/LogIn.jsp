@@ -10,7 +10,7 @@
 <!DOCTYPE html">
 <html>
     <head>
-        <%@include file="../../resources/common/header.jsp" %>       
+        <%@include file="../../resources/common/head.jsp" %>        
     </head>
     <body>
         <script type="text/javascript">
@@ -18,15 +18,17 @@
                 // get the form values  
                 var mail = $('#email').val();
                 var pwd = $('#pwd').val();
+                var data = $('form').serialize();
 
                 if (validateForm(mail, pwd)) {
                     $.ajax({
                         type: "POST",
                         url: 'LogIn.htm',
-                        data: "email=" + mail + "&pwd=" + pwd,
+                        data: data,
                         success: function(response) {
                             // we have the response  
                             $('#info').html(response);
+                            $('#log').remove();
                         },
                         error: function(e) {
                             alert('Error: ' + e);
@@ -49,19 +51,30 @@
                 }
             }
         </script>       
-        <h1>Pizzeria</h1>
-        <article>    
-            <table>   
-                <form:form commandName="user">  
-                    <tr><td><p><label for=email>Email: </label></p></td><td><form:input path="email" id="email" type="text" value="email"/></td><td><p hidden="true" class="error" id="mail_err">Non hai inserito la mail!</p></td></tr>
-                    <tr><td><p><label for=user>Password: </label> </p></td><td><form:input path="pwd" id="pwd" type="password" value="password"/><td><p hidden="true" class="error" id="pwd_err">Non hai inserito la password!</p></td></td></tr>
-                    <tr><td><input type="button" onclick="doAjaxPost()" value="Accedi"><td><a href="addUser.htm">Iscriviti!</a></td></tr>
-                        </form:form>
-            </table>
-            <p id="info"></p>
+        <header>
+            <%@include file="../../resources/common/header.html" %> 
+        </header> 
+        <article>
+            <section>
+                <p class="hello">${message}</p>
+            </section>
+            <section>
+                <table id="log">   
+                    <form:form commandName="user">  
+                        <tr><td><p><label for=email>Email: </label></p></td><td><form:input path="email" id="email" type="text" value="email"/></td><td><p hidden="true" class="error" id="mail_err">Non hai inserito la mail!</p></td></tr>
+                        <tr><td><p><label for=user>Password: </label> </p></td><td><form:input path="pwd" id="pwd" type="password" value="password"/><td><p hidden="true" class="error" id="pwd_err">Non hai inserito la password!</p></td></td></tr>
+                        <tr><td><input class="button" type="button" onclick="doAjaxPost()" value="Accedi"><td><a class="button" href="addUser.htm">Iscriviti!</a></td></tr>
+                    </form:form>
+                </table>
+                <p id="info"></p>
+            </section>
         </article>
         <nav> 
             <%@include file="../../resources/common/menu.jsp" %>            
         </nav>
+        <footer>
+            <%@include file="../../resources/common/footer.jsp" %>            
+        </footer>
     </body>
+
 </html>

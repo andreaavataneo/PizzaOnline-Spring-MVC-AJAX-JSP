@@ -4,18 +4,25 @@
 
 <html>
     <head>
-       <%@include file="../../resources/common/header.jsp" %>
+        <%@include file="../../resources/common/head.jsp" %>
     </head>
-
     <body>
-        <h1>Pizzeria</h1>
-        <p>${helloMessage}</p>
-        <article>            
-            <form action="" method="POST"  onsubmit="return check(this);">
-                <p>pagina di accoglienza</p>
+        <header>
+            <%@include file="../../resources/common/header.html" %>           
+        </header>    
+        <article>
+            <section>
+                <p class="hello">${helloMessage}</p>
+            </section>
+            <section>
+                ${menu}
+            </section>
         </article>
         <nav> 
             <%@include file="../../resources/common/menu.jsp" %>            
         </nav>
     </body>
+    <footer>
+        <%@include file="../../resources/common/footer.jsp" %>
+    </footer>
 </html>

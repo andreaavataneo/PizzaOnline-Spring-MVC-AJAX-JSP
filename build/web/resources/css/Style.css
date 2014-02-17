@@ -6,64 +6,42 @@
         Purpose of the stylesheet follows.
 */
 
-root { 
-    display: block;    
-}
+root {display: block;}
 
-header {
-    
-}
+.elastic{width:100%; height:auto;float:left;}
 
-body {
-    
-}
+header{background-image: url(../images/banner-pizza.jpg); height: 20%; width: 100%; }
 
-h1{
-    font-size: 150%;
-    text-align: center;
-    
-}
+#pizzalist{ border: solid;}
 
-h2 {
-    font-size: 100%;
-    text-align: center;
-    
-}
+.hello{color: blue;}
 
-p{
-    color: black;
-    text-align: center;
-}
+body, html{ margin: 0;  padding:0; height: 100%; width: 100%;}
 
-article {
-    
-    float: right;
-    width: 70%;
-    border: solid blue;
-    margin: 2em;
-    padding: 2ex;
-}
+h1{color: blue; text-shadow: 5px 5px 10px deepskyblue; font-size: 300%; text-align: center; font-style: italic;}
 
-nav {
-    
-    float: left;
-    width: 10%;
-    margin: 2em;
-    padding: 1ex;
-}
+h2 {font-size: 100%; text-align: center;}
 
-form {
-    
-    
-}
+p{color: black; text-align: center;}
 
-input{
-    
-    border: 1px solid;
-}
+article {text-align: justify; float: right; width: 80%; height: 100%;}
 
-.error{
-    color: red;
-}
+nav {width: 20%; height:100%; float: left; background: #eee;}
 
+nav a {display: block; background: #eee; color:#757575; text-decoration: none; border-bottom: 1px solid #ddd; padding: 1em;}
 
+nav a:hover {background: #ddd;}
+
+table{}
+
+.button{cursor:pointer; padding:5px 25px; background:#35b128; border:1px solid #33842a; -moz-border-radius: 10px; -webkit-border-radius: 10px;
+       border-radius: 10px;-webkit-box-shadow: 0 0 4px rgba(0,0,0, .75); -moz-box-shadow: 0 0 4px rgba(0,0,0, .75); box-shadow: 0 0 4px rgba(0,0,0, .75);
+       color:#f3f3f3; font-size:1.1em; text-decoration:none; font-family: fantasy; font-size: 130%;}
+
+.button:hover{ background-color :#399630; -webkit-box-shadow: 0 0 1px rgba(0,0,0, .75); -moz-box-shadow: 0 0 1px rgba(0,0,0, .75); box-shadow: 0 0 1px rgba(0,0,0, .75);}
+
+input{border: 1px solid;}
+
+.error{color: red;}
+
+footer{height: 20%; width: 100%; clear: both;}

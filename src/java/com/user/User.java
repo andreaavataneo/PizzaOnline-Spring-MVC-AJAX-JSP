@@ -31,6 +31,7 @@ public class User {
      * ModelAndView relativa alla pagina di LogIn.
      */
     public User() {
+       this.email="ospite";
     }
         
     public String getName() {

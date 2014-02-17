@@ -23,7 +23,7 @@ public class DB {
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS");
-            out = "<table><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td></tr>";
+            out = "<table id='pizzalist'><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td></tr>";
             while (rs.next()) {
 
                 out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td></tr>";
@@ -65,10 +65,9 @@ public class DB {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery("INSERT INTO users(nameU, surname, password, address, phone, admin, email) VALUES ('" + name + "', '" + surname + "', '" + pwd + "', '" + addr + "', '" + phone + "',false, '" + email + "')");
+            st.executeUpdate("INSERT INTO users(nameU, surname, password, address, phone, admin, email) VALUES ('" + name + "', '" + surname + "', '" + pwd + "', '" + addr + "', '" + phone + "',false, '" + email + "')");
             st.close();
-            conn.close();
-            rs.close();
+            conn.close();           
         } catch (SQLException e) {
             return false;
         }
@@ -93,6 +92,28 @@ public class DB {
             rs.close();
         } catch (SQLException e) {
             out = false;
+        }
+        return out;
+    }
+    
+    public String menuOrder(){
+        String out;
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS");
+            out = "<table id='pizzalist'><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td></tr>";
+            while (rs.next()) {
+
+                out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td><td><input id='"+rs.getString("NAMEP")+"' value='0'/></td></tr>";
+            }
+            out = out + "</table>";
+            out = out +"<button onClicl='doAjaxPost();'>Ordina!</button>";
+            st.close();
+            conn.close();
+        } catch (SQLException e) {
+            out = e.getMessage();
         }
         return out;
     }
