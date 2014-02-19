@@ -5,6 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -19,14 +21,14 @@
                 <p class="hello">${helloMessage}</p>                 
             </section>
             <section>
-               
+                <%@include file="../../resources/common/formAdmin.jsp" %>
             </section>
         </article>
         <nav id="menu"> 
             ${menuType}            
         </nav>
+        <footer>
+            <%@include file="../../resources/common/footer.jsp" %>
+        </footer>
     </body>
-    <footer>
-        <%@include file="../../resources/common/footer.jsp" %>
-    </footer>
 </html>

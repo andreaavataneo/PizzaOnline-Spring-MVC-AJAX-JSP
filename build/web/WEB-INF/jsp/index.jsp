@@ -21,8 +21,8 @@
         <nav id="menu"> 
             ${menuType}            
         </nav>
-    </body>
-    <footer>
-        <%@include file="../../resources/common/footer.jsp" %>
-    </footer>
+        <footer>
+            <%@include file="../../resources/common/footer.jsp" %>
+        </footer>
+    </body>   
 </html>

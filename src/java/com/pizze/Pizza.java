@@ -19,6 +19,10 @@ public class Pizza {
         this.description = description;
         this.price = price;
     }
+    
+    public Pizza() {
+        
+    }
 
     public String getName() {
         return name;

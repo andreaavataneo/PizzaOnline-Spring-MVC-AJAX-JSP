@@ -23,7 +23,7 @@ public class DB {
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS");
-            out = "<table id='pizzalist'><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td></tr>";
+            out = "<table id=\"pizzalist\"><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td></tr>";
             while (rs.next()) {
 
                 out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td></tr>";
@@ -108,7 +108,7 @@ public class DB {
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS");
-            out = "<table id='pizzalist'><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td></tr>";
+            out = "<table id=\"pizzalist\"><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td></tr>";
             while (rs.next()) {
 
                 out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td><td><input id='"+rs.getString("NAMEP")+"' value='0'/></td></tr>";

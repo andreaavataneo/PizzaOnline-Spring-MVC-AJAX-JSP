@@ -4,6 +4,7 @@
  */
 package com.controller;
 
+import com.pizze.Pizza;
 import com.service.DB;
 import com.user.User;
 import org.springframework.stereotype.Controller;
@@ -112,9 +113,10 @@ public class Mycontroller {
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
-    public ModelAndView adminArea(@ModelAttribute(value = "user") User user) {
+    public ModelAndView adminArea(@ModelAttribute(value = "user") User user, @ModelAttribute(value="pizza") Pizza pizza) {
         ModelAndView maw = new ModelAndView("admin");
-        maw.addObject("helloMessage", "Area riservata agli amministratori");
+        maw.addObject("pizza", new Pizza());
+        maw.addObject("helloMessage", "Area riservata agli amministratori, aggiunta/modifica/rimozione pizze");
         if (user.getEmail().equals("ospite")) {
             maw.addObject("menuType", guestMenu);
         } else if (user.getRole().equals("client")) {
