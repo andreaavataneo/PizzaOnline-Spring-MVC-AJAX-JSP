@@ -22,10 +22,14 @@ import org.springframework.web.servlet.ModelAndView;
 @SessionAttributes("user")
 public class Mycontroller {
 
+    private String clientMenu = "<a href=\"index.htm\">Home</a>\n<a href=\"ClientArea.htm\">Area Clienti</a>\n<a href=\"LogOut.htm\">Log Out</a>";
+    private String guestMenu = "<a href=\"index.htm\">Home</a>\n<a href=\"LogIn.htm\">Log In</a>";
+    private String adminMenu = "<a href=\"index.htm\">Home</a>\n<a href=\"ClientArea.htm\">Area Clienti</a>\n<a href=\"admin.htm\">Area Admin</a>\n"
+            + "<a href=\"LogOut.htm\">Log Out</a>";
+
     @ModelAttribute("user")
     public User getUserObject() {
         return new User();
-
     }
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
@@ -37,47 +41,87 @@ public class Mycontroller {
                 + " un'ordinazione dovrai entrare nell'area clienti. Se non sei cliente, Registrati!";
         maw.addObject("helloMessage", s);
         maw.addObject("menu", menu);
-        maw.addObject("session", user.getEmail());
+        maw.addObject("session", user);
+        if (user.getEmail().equals("ospite")) {
+            maw.addObject("menuType", guestMenu);
+        } else if (user.getRole().equals("client")) {
+            maw.addObject("menuType", clientMenu);
+        } else {
+            maw.addObject("menuType", adminMenu);
+        }
         return maw;
-    }    
+    }
 
     @RequestMapping(value = "/LogIn", method = RequestMethod.GET)
-    public ModelAndView logIn(@ModelAttribute User user) {
-        ModelAndView maw = new ModelAndView("LogIn");        
+    public ModelAndView logIn(@ModelAttribute(value = "user") User user) {
+        ModelAndView maw = new ModelAndView("LogIn");
         if (user.getEmail().equals("ospite")) {
             maw.addObject("message", "Effettua l'accesso inserendo la tua mail e la password, altrimenti vai alla pagina di iscrizione.");
-            maw.addObject("session", user.getEmail());
-            maw.addObject("user", new User()); //creo il bean necessario al form di LogIn e lo aggiungo al ModelAndView
-            return maw;
+            maw.addObject("menuType", guestMenu);
+            maw.addObject("session", user);
+            maw.addObject("user", new User()); //creo il bean necessario al form di LogIn e lo aggiungo al ModelAndView            
+        } else if (user.getRole().equals("client")) {
+            maw.addObject("message", "Hai già effettuato il Log In a nome: " + user.getEmail());
+            maw.addObject("menuType", clientMenu);
+            maw.addObject("session", user);
         } else {
-            DB jdbc = new DB();
-            maw.addObject("message", "Hai già effettuato il Log In a nome: "+user.getEmail());
-            maw.addObject("session", user.getEmail());            
-            return maw;
+            maw.addObject("message", "Hai già effettuato il Log In a nome: " + user.getEmail());
+            maw.addObject("menuType", adminMenu);
+            maw.addObject("session", user);
         }
+        return maw;
     }
 
     @RequestMapping(value = "/addUser", method = RequestMethod.GET)
-    public ModelAndView addUser(@ModelAttribute User user) {
+    public ModelAndView addUser(@ModelAttribute(value = "user") User user, @ModelAttribute(value = "s_user") User s_user) {
         ModelAndView maw = new ModelAndView();
         String s = "Comila tutti i campi per poter effettuare la registrazione al nostro sito.";
-        maw.addObject("session", user.getEmail());
+        maw.addObject("session", user);
         maw.addObject("user", new User());
+        if (user.getEmail().equals("ospite")) {
+            maw.addObject("menuType", guestMenu);
+        } else if (user.getRole().equals("client")) {
+            maw.addObject("menuType", clientMenu);
+        } else {
+            maw.addObject("menuType", adminMenu);
+        }
         return maw.addObject("message", s);
     }
-    
+
     @RequestMapping(value = "/LogOut", method = RequestMethod.GET)
-    public String logOut(SessionStatus status){
+    public String logOut(SessionStatus status) {
         status.setComplete();
         return "redirect:/index.htm";
     }
-    
-    @RequestMapping(value="/ClientArea", method = RequestMethod.GET)
-    public ModelAndView clientArea(){
+
+    @RequestMapping(value = "/ClientArea", method = RequestMethod.GET)
+    public ModelAndView clientArea(@ModelAttribute(value = "user") User user) {
         ModelAndView maw = new ModelAndView("ClientArea");
         DB jdbc = new DB();
-        maw.addObject("order",jdbc.menuOrder());
-        maw.addObject("message","Pagina di ordinazione");
+        maw.addObject("order", jdbc.menuOrder());
+        maw.addObject("message", "Pagina di ordinazione");
+        maw.addObject("user", user);
+        if (user.getEmail().equals("ospite")) {
+            maw.addObject("menuType", guestMenu);
+        } else if (user.getRole().equals("client")) {
+            maw.addObject("menuType", clientMenu);
+        } else {
+            maw.addObject("menuType", adminMenu);
+        }
+        return maw;
+    }
+
+    @RequestMapping(value = "/admin", method = RequestMethod.GET)
+    public ModelAndView adminArea(@ModelAttribute(value = "user") User user) {
+        ModelAndView maw = new ModelAndView("admin");
+        maw.addObject("helloMessage", "Area riservata agli amministratori");
+        if (user.getEmail().equals("ospite")) {
+            maw.addObject("menuType", guestMenu);
+        } else if (user.getRole().equals("client")) {
+            maw.addObject("menuType", clientMenu);
+        } else {
+            maw.addObject("menuType", adminMenu);
+        }
         return maw;
     }
 }

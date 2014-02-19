@@ -12,14 +12,14 @@
         </header>    
         <article>
             <section>
-                <p class="hello">${helloMessage}</p>
+                <p class="hello">${helloMessage}</p>                 
             </section>
             <section>
                 ${menu}
             </section>
         </article>
-        <nav> 
-            <%@include file="../../resources/common/menu.jsp" %>            
+        <nav id="menu"> 
+            ${menuType}            
         </nav>
     </body>
     <footer>

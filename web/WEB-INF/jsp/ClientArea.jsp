@@ -12,24 +12,24 @@
         <%@include file="../../resources/common/head.jsp" %>
     </head>
     <body>
-        <script type="text/javascript">           
-           function doAjaxPost(){
-                var qty = $('#qty').val();            
-                
-                    $.ajax({
-                        type: "POST",
-                        url: 'ClientArea.htm',
-                        data: data,
-                        success: function(response) {
-                            // we have the response                             
-                            $('#info').html(response);
-                        },
-                        error: function(e) {
-                            alert('Error: ' + e);
-                        }
-                    });
-                }            
-            
+        <script type="text/javascript">
+            function doAjaxPost() {
+                var qty = $('#qty').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: 'ClientArea.htm',
+                    data: data,
+                    success: function(response) {
+                        // we have the response                             
+                        $('#info').html(response);
+                    },
+                    error: function(e) {
+                        alert('Error: ' + e);
+                    }
+                });
+            }
+
         </script>
         <header>
             <%@include file="../../resources/common/header.html" %>           
@@ -43,8 +43,8 @@
                 <p id="info"></p>
             </section>
         </article>
-        <nav> 
-            <%@include file="../../resources/common/menu.jsp" %>            
+        <nav id="menu"> 
+            ${menuType}            
         </nav>
     </body>
     <footer>

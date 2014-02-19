@@ -45,19 +45,19 @@
                 if (name === "") {
                     $('#name_err').show();
                     return false;
-                } else if (phone === "") {
+                } if (phone === "") {
                     $('#phone_err').show();
                     return false;
-                } else if (surname === "") {
+                } if (surname === "") {
                     $('#surname_err').show();
                     return false;
-                } else if (addr === "") {
+                } if (addr === "") {
                     $('#addr_err').show();
                     return false;
                 } else if (mail === "") {
                     $('#email_err').show();
                     return false;
-                } else if (pwd === "") {
+                } if (pwd === "") {
                     $('#pwd_err').show();
                     return false;
                 } else {
@@ -88,13 +88,13 @@
                         <tr><td><p><label for=address>Indirizzo: </label></p></td><td><form:input path="address" id="addr" type="text" value="Indirizzo"/><td><p hidden="true" class="error" id="addr_err">Non hai inserito l'indirizzo!</p></td></td></tr>
                         <tr><td><p><label for=email>Email: </label></p></td><td><form:input path="email" id="email" type="email" value="Email"/></td><td><p hidden="true" class="error" id="email_err">Non hai inserito l'email!</p></td></tr>
                         <tr><td><input class="button" type="button" onClick="doAjaxPost();" value="Invia richiesta"></tr>
-                    </form:form>
+                            </form:form>
                 </table>
                 <p id="info"></p>
             </section>
         </article>
-        <nav> 
-            <%@include file="../../resources/common/menu.jsp" %>            
+        <nav id="menu"> 
+            ${menuType}            
         </nav>
         <footer>
             <%@include file="../../resources/common/footer.jsp" %>

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-
 /**
  *
  * @author Andrea
@@ -26,16 +25,21 @@ public class FormController {
     @RequestMapping(value = "/LogIn", method = RequestMethod.POST)
     @ResponseBody
     public String logger(@ModelAttribute(value = "user") User user, BindingResult result) {
-        String returnText;
+        String out;
         DB jdbc = new DB(); //istanzio un oggetto DB
         if (result.hasErrors()) {
-            returnText = "Errore nell'interazione Ajax.";
-        } else if (jdbc.logger(user.getEmail(), user.getPwd())) {
-            returnText = user.getEmail() + " hai effettuato l'acceso con successo!"; //messaggio di conferma              
+            out = "Errore nell'interazione Ajax!";
+        } else if (jdbc.logger(user)) {
+            out = "Hai effettuato l'accesso con sussecco! " + user.getEmail(); //successo 
+            if (user.getRole().equals("admin")) {
+                out = "admin";
+            }
         } else {
-            returnText = "Nome utente o password errati!"; //messaggio di errore
+            out = "failed"; //errore
+            user.setEmail("ospite");
+            user.setPwd("password");
         }
-        return returnText;
+        return out;
     }
 
     @RequestMapping(value = "/addUser", method = RequestMethod.POST)
@@ -46,7 +50,7 @@ public class FormController {
         if (result.hasErrors()) {
             returnText = "Errore nell'interazione Ajax.";
         } else if (jdbc.checkMail(user.getEmail())) {
-            jdbc.addUser(user.getName(), user.getSurname(), user.getPhone(), user.getEmail(), user.getAddress(), user.getPwd());
+            jdbc.addUser(user);
             returnText = "Inserimento effettuato con successo!";
         } else {
             returnText = "C'è già una registrazione con questa email!";
@@ -54,11 +58,10 @@ public class FormController {
 
         return returnText;
     }
-    
+
     @RequestMapping(value = "/ClientArea", method = RequestMethod.POST)
     @ResponseBody
-    public String order(){
+    public String order() {
         return null;
-    }   
-    
+    }
 }

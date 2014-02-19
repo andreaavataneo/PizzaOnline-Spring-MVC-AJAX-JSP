@@ -5,7 +5,7 @@
 package com.service;
 
 import java.sql.*;
-
+import com.user.User;
 /**
  *
  * @author Andrea
@@ -37,16 +37,21 @@ public class DB {
         return out;
     }
 
-    public boolean logger(String mail, String pwd) {
+    public boolean logger(User user) {
         boolean out;
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM USERS WHERE (EMAIL='" + mail + "') AND (PASSWORD='" + pwd + "')");
+            ResultSet rs = st.executeQuery("SELECT * FROM USERS WHERE (EMAIL='" + user.getEmail() + "') AND (PASSWORD='" + user.getPwd() + "')");
             rs.next();
             if (rs.getRow() == 1) {
                 out = true;
+                user.setName(rs.getString("NAMEU"));
+                user.setSurname(rs.getString("SURNAME"));
+                user.setAddress(rs.getString("ADDRESS"));
+                user.setPhone(rs.getString("PHONE"));
+                user.setRole(rs.getString("ROLE"));                
             } else {
                 out = false;
             }
@@ -59,13 +64,13 @@ public class DB {
         return out;
     }
 
-    public boolean addUser(String name, String surname, String phone, String email, String addr, String pwd) {
+    public boolean addUser(User user) {
 
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
-            st.executeUpdate("INSERT INTO users(nameU, surname, password, address, phone, admin, email) VALUES ('" + name + "', '" + surname + "', '" + pwd + "', '" + addr + "', '" + phone + "',false, '" + email + "')");
+            st.executeUpdate("INSERT INTO users(nameU, surname, password, address, phone, admin, email) VALUES ('" + user.getName() + "', '" + user.getSurname() + "', '" + user.getPwd() + "', '" + user.getAddress() + "', '" + user.getPhone() + "',client, '" + user.getEmail() + "')");
             st.close();
             conn.close();           
         } catch (SQLException e) {

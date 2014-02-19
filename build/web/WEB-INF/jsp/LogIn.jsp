@@ -14,6 +14,7 @@
     </head>
     <body>
         <script type="text/javascript">
+
             function doAjaxPost() {
                 // get the form values  
                 var mail = $('#email').val();
@@ -26,9 +27,16 @@
                         url: 'LogIn.htm',
                         data: data,
                         success: function(response) {
-                            // we have the response  
-                            $('#info').html(response);
-                            $('#log').remove();
+                            // we have the response 
+                            if (response.toString() === "failed") {
+                                $('#info').html("Nome utente o password errati!").fadeIn("slow");
+                            } else if (response.toString() === "admin") {
+                                $('#log').fadeOut("slow");
+                                $('#menu').fadeOut("slow").load('<c:url value="/resources/common/adminMenu.jsp"/>').fadeIn("slow");
+                            } else {
+                                $('#log').fadeOut("slow");
+                                $('#menu').fadeOut("slow").load('<c:url value="/resources/common/clientMenu.jsp"/>').fadeIn("slow");
+                            }
                         },
                         error: function(e) {
                             alert('Error: ' + e);
@@ -41,7 +49,8 @@
                 if (mail === "") {
                     $('#mail_err').show();
                     return false;
-                } else if (pwd === "") {
+                }
+                if (pwd === "") {
                     $('#pwd_err').show();
                     return false;
                 } else {
@@ -59,18 +68,12 @@
                 <p class="hello">${message}</p>
             </section>
             <section>
-                <table id="log">   
-                    <form:form commandName="user">  
-                        <tr><td><p><label for=email>Email: </label></p></td><td><form:input path="email" id="email" type="text" value="email"/></td><td><p hidden="true" class="error" id="mail_err">Non hai inserito la mail!</p></td></tr>
-                        <tr><td><p><label for=user>Password: </label> </p></td><td><form:input path="pwd" id="pwd" type="password" value="password"/><td><p hidden="true" class="error" id="pwd_err">Non hai inserito la password!</p></td></td></tr>
-                        <tr><td><input class="button" type="button" onclick="doAjaxPost()" value="Accedi"><td><a class="button" href="addUser.htm">Iscriviti!</a></td></tr>
-                    </form:form>
-                </table>
-                <p id="info"></p>
+                <%@include file="../../resources/common/formLog.html" %>
+                <p id="info"></p>                
             </section>
         </article>
-        <nav> 
-            <%@include file="../../resources/common/menu.jsp" %>            
+        <nav id="menu"> 
+            ${menuType}
         </nav>
         <footer>
             <%@include file="../../resources/common/footer.jsp" %>            
