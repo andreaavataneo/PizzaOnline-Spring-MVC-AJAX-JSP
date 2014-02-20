@@ -122,4 +122,85 @@ public class DB {
         }
         return out;
     }
+    
+    //restituisce una tabella con tutti gli ordini esistenti e tutte le possibili informazioni 
+    public String allOrders() {
+        String out;
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("select (select email from users where users.ID_U=orders.ID_U) as cliente," +
+                                            "(select address from users where users.ID_U=orders.ID_U) as destinazione," +
+                                            "(select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP," +
+                                            "numberOf, datao, hour_time, shipped, received  from orders"+
+                                            "order by datao,hour_time,id_u");
+            out = "<table id=\"orderlist\"><tr><td>Cliente</td><td>Destinazione</td><td>Pizza</td><td>Quante?</td><td>Data</td><td>Fascia Oraria</td><td>In viaggio?</td><td>Arrivata?</td></tr>";
+            while (rs.next()) {
+
+                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + rs.getString("datao") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
+            }
+            out = out + "</table>";
+            st.close();
+            conn.close();
+        } catch (SQLException e) {
+            out = e.getMessage();
+        }
+        return out;
+        
+    }
+    
+    //restituisce una tabella con tutti gli ordini ancora da evadere
+    public String allWaitingOrders() {
+        String out;
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("select (select email from users where users.ID_U=orders.ID_U) as cliente," +
+                                            "(select address from users where users.ID_U=orders.ID_U) as destinazione," +
+                                            "(select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP," +
+                                            "numberOf, datao, hour_time, shipped, received  from orders " +
+                                            "where shipped=false AND datao > current_date order by datao,hour_time,id_u");
+            out = "<table id=\"orderlist\"><tr><td>Cliente</td><td>Destinazione</td><td>Pizza</td><td>Quante?</td><td>Data</td><td>Fascia Oraria</td><td>In viaggio?</td><td>Arrivata?</td></tr>";
+            while (rs.next()) {
+
+                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + rs.getString("datao") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
+            }
+            out = out + "</table>";
+            st.close();
+            conn.close();
+        } catch (SQLException e) {
+            out = e.getMessage();
+        }
+        return out;
+        
+    }
+    
+     //restituisce una tabella con tutti gli ordini evasi ma ancora non confermati
+    public String allShippedOrders() {
+        String out;
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("select (select email from users where users.ID_U=orders.ID_U) as cliente," +
+                                            "(select address from users where users.ID_U=orders.ID_U) as destinazione," +
+                                            "(select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP," +
+                                            "numberOf, datao, hour_time, shipped, received  from orders" +
+                                            "where shipped=true AND datao > current_date order by datao,hour_time,id_u");
+            out = "<table id=\"orderlist\"><tr><td>Cliente</td><td>Destinazione</td><td>Pizza</td><td>Quante?</td><td>Data</td><td>Fascia Oraria</td><td>In viaggio?</td><td>Arrivata?</td></tr>";
+            while (rs.next()) {
+
+                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + rs.getString("datao") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
+            }
+            out = out + "</table>";
+            st.close();
+            conn.close();
+        } catch (SQLException e) {
+            out = e.getMessage();
+        }
+        return out;
+        
+    }
 }

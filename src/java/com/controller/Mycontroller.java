@@ -38,7 +38,7 @@ public class Mycontroller {
         ModelAndView maw = new ModelAndView("index");
         DB jdbc = new DB();
         String menu = jdbc.showMenu();
-        String s = "Benvenuto nella Pizzeria Nico&Andre, potrai consultare il menu&grave; che offriamo. Se vorrai effettuare"
+        String s = "Benvenuto nella Pizzeria Nico&amp;Andre, potrai consultare il menu&grave; che offriamo. Se vorrai effettuare"
                 + " un'ordinazione dovrai entrare nell'area clienti. Se non sei cliente, Registrati!";
         maw.addObject("helloMessage", s);
         maw.addObject("menu", menu);

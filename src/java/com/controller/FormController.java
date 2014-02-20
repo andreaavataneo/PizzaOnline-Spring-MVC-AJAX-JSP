@@ -30,7 +30,7 @@ public class FormController {
         if (result.hasErrors()) {
             out = "Errore nell'interazione Ajax!";
         } else if (jdbc.logger(user)) {
-            out = "Hai effettuato l'accesso con sussecco! " + user.getEmail(); //successo 
+            out = "Hai effettuato l'accesso con successo! " + user.getEmail(); //successo 
             if (user.getRole().equals("admin")) {
                 out = "admin";
             }
