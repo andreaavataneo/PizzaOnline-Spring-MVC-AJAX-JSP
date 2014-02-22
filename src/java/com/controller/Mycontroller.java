@@ -43,6 +43,7 @@ public class Mycontroller {
         maw.addObject("helloMessage", s);
         maw.addObject("menu", menu);
         maw.addObject("session", user);
+        maw.addObject("proveNiko",jdbc.allOrders());
         if (user.getEmail().equals("ospite")) {
             maw.addObject("menuType", guestMenu);
         } else if (user.getRole().equals("client")) {
