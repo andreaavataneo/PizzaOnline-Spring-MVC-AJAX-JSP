@@ -16,6 +16,10 @@ public class DB {
     private static final String us = "app";
     private static final String pwd = "app";
 
+    /**Restituisce una tabella chiamata 'pizzalist' con le pizze appunto
+     * 
+     * @return out  
+     */
     public String showMenu() {
         String out;
         try {
@@ -35,6 +39,57 @@ public class DB {
             out = e.getMessage();
         }
         return out;
+    }
+    
+    /**aggiunge una pizza assandogli i 3 campi
+     * 
+     * @param nameP
+     * @param recipe
+     * @param price 
+     */
+    public void addPizza (String nameP, String recipe, double price) {
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            st.executeUpdate("INSERT INTO pizzas (nameP, recipe, price) VALUES ('"+nameP+"', '"+recipe+"', "+price+")");
+            st.close();
+            conn.close();
+        } catch (SQLException e) {}
+    }
+    
+    /**Rimuove la pizza con id_p pasato come parametro
+     * 
+     * @param id_p 
+     */
+    public void delPizza (int id_p) {
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            st.executeUpdate("DELETE FROM pizzas WHERE id_p="+id_p);
+            st.close();
+            conn.close();
+        } catch (SQLException e) {}
+    }
+    
+    /**modifica la pizza identificata dal id_p e ci assegna i nuovi campi
+     * 
+     * @param id_p
+     * @param nameP
+     * @param recipe
+     * @param price 
+     */
+    public void modPizza (int id_p, String nameP, String recipe, double price) { 
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            st.executeUpdate("UPDATE pizzas SET nameP='"+nameP+"', recipe='"+recipe+"', price="+price+
+                    " where id_p="+id_p);
+            st.close();
+            conn.close();
+        } catch (SQLException e) {}
     }
 
     public boolean logger(User user) {
@@ -125,7 +180,10 @@ public class DB {
         return out;
     }
     
-    //restituisce una tabella con tutti gli ordini esistenti e tutte le possibili informazioni 
+    /**restituisce una tabella 'orderlist' con tutti gli ordini esistenti e tutte le possibili informazioni 
+     * 
+     * @return out
+     */
     public String allOrders() {
         String out;
         try {
@@ -135,12 +193,13 @@ public class DB {
             ResultSet rs = st.executeQuery("select (select email from users where users.ID_U=orders.ID_U) as cliente," +
                                             "(select address from users where users.ID_U=orders.ID_U) as destinazione," +
                                             "(select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP," +
-                                            "numberOf, datao, hour_time, shipped, received  from orders"+
+                                            "numberOf, datao, hour_time, shipped, received  from orders "+
                                             "order by datao,hour_time,id_u");
+            
             out = "<table id=\"orderlist\"><tr><td>Cliente</td><td>Destinazione</td><td>Pizza</td><td>Quante?</td><td>Data</td><td>Fascia Oraria</td><td>In viaggio?</td><td>Arrivata?</td></tr>";
             while (rs.next()) {
 
-                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + rs.getString("datao") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
+                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + rs.getString("datao") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
             }
             out = out + "</table>";
             st.close();
@@ -152,7 +211,11 @@ public class DB {
         
     }
     
-    //restituisce una tabella con tutti gli ordini ancora da evadere
+    /**restituisce una tabella id='orderlist' con tutti gli ordini ancora da evadere
+     * 
+     * @return out
+     */
+    
     public String allWaitingOrders() {
         String out;
         try {
@@ -167,7 +230,7 @@ public class DB {
             out = "<table id=\"orderlist\"><tr><td>Cliente</td><td>Destinazione</td><td>Pizza</td><td>Quante?</td><td>Data</td><td>Fascia Oraria</td><td>In viaggio?</td><td>Arrivata?</td></tr>";
             while (rs.next()) {
 
-                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + rs.getString("datao") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
+                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + rs.getString("datao") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
             }
             out = out + "</table>";
             st.close();
@@ -179,7 +242,10 @@ public class DB {
         
     }
     
-     //restituisce una tabella con tutti gli ordini evasi ma ancora non confermati
+     /**restituisce una tabella id='orderlist' con tutti gli ordini evasi ma ancora non confermati
+      * 
+      * @return out
+      */
     public String allShippedOrders() {
         String out;
         try {
@@ -189,12 +255,12 @@ public class DB {
             ResultSet rs = st.executeQuery("select (select email from users where users.ID_U=orders.ID_U) as cliente," +
                                             "(select address from users where users.ID_U=orders.ID_U) as destinazione," +
                                             "(select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP," +
-                                            "numberOf, datao, hour_time, shipped, received  from orders" +
+                                            "numberOf, datao, hour_time, shipped, received  from orders " +
                                             "where shipped=true AND datao > current_date order by datao,hour_time,id_u");
             out = "<table id=\"orderlist\"><tr><td>Cliente</td><td>Destinazione</td><td>Pizza</td><td>Quante?</td><td>Data</td><td>Fascia Oraria</td><td>In viaggio?</td><td>Arrivata?</td></tr>";
             while (rs.next()) {
 
-                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + rs.getString("datao") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
+                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + rs.getString("datao") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
             }
             out = out + "</table>";
             st.close();
@@ -204,5 +270,48 @@ public class DB {
         }
         return out;
         
+    }
+    
+    
+    /**imposta il valore di shipped a VERO in base ai 3 parametri id_u
+     * 
+     * @param id_u
+     * @param datao
+     * @param hour_time 
+     */
+    public void sendOrder (int id_u, String datao, int hour_time) {
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            st.executeUpdate("UPDATE orders SET shipped=true where "+
+                    "id_u="+id_u+" AND "+
+                    "datao='"+datao+"' AND "+
+                    "hour_time="+hour_time);
+            st.close();
+            conn.close();
+        } catch (SQLException e) {}
+    }
+    
+    
+    /**conferma la ricezione di un ordine
+     * 
+     * @param id_u
+     * @param datao
+     * @param hour_time 
+     */
+    public void confirmOrder (int id_u, String datao, int hour_time) {
+        String out;
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            st.executeUpdate("UPDATE orders SET received=true where "+
+                    "id_u='"+id_u+"' AND "+
+                    "datao='"+datao+"' AND "+
+                    "hour_time="+hour_time);
+            st.close();
+            conn.close();
+        } catch (SQLException e) {}
     }
 }

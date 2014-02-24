@@ -12,7 +12,8 @@
         </header>    
         <article>
             <section>
-                <p class="hello">${helloMessage}</p>                 
+                <p class="hello">${helloMessage}</p>   
+                <p> ${proveNiko}</p>
             </section>
             <section>
                 ${menu}
