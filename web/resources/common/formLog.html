@@ -3,13 +3,17 @@
 <form:form id="log" commandName="user"> 
     <fieldset>
         <legend>Dettagli utente:</legend>  
-        <ul>
-            <li><label for=email>Email: </label><form:input path="email" id="email" type="text" value="email"/><p hidden="true" class="error" id="mail_err">Non hai inserito la mail!</p></li>
-            <li><label for=user>Password: </label><form:input path="pwd" id="pwd" type="password" value="password"/><p hidden="true" class="error" id="pwd_err">Non hai inserito la password!</p></li>
-        </ul>
+        <dl>
+            <dt><label for=email>Email*: </label></dt>
+            <dd><form:input  path="email" id="email" type="email" value="email" autofocus="on" placeholder="Enter email" required="on"/></dd>
+            <dt><label for=user>Password*: </label></dt>
+            <dd><form:input path="pwd" id="pwd" type="password" value="password" required="on"/></dd>
+        </dl>
     </fieldset>
     <fieldset>
         <input class="button" type="button" onclick="doAjaxPost();" value="Accedi"><a class="button" href="addUser.htm">Iscriviti!</a>
+        <p hidden="true" class="error" id="mail_err">Non hai inserito la mail!</p>
+        <p hidden="true" class="error" id="pwd_err">Non hai inserito la password!</p>
     </fieldset>
 </form:form>
 

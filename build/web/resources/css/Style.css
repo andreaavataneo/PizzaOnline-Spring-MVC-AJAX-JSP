@@ -12,7 +12,9 @@ root {display: block;}
 
 fieldset{font:100% sans-serif; border-radius: 15px; text-align: left;}
 
-fieldset ul li{line-height: 150%;}
+fieldset dd {float: left; width: 10%;  padding: 1%;}
+
+fieldset dt{float: left; padding: 1%; width: 10%; clear: both; text-align: right;}
 
 label { font-weight:bold; }
 
@@ -30,7 +32,7 @@ h2 {font-size: 100%; text-align: center;}
 
 p{color: black; text-align: center;}
 
-article { float: right; width: 80%; height: 100%;}
+article { float: right; width: 80%; height: 60%;}
 
 nav {width: 20%; height:100%; float: left; background: #eee;}
 

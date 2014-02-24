@@ -9,6 +9,7 @@ import com.user.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -63,5 +64,21 @@ public class FormController {
     @ResponseBody
     public String order() {
         return null;
+    }
+
+    @RequestMapping(value = "/{act}/action", method = RequestMethod.GET)
+    @ResponseBody
+    public String orderList(@PathVariable String act) {
+        String returnText="Errore nell'interazione Ajax!";
+        if(act.equals("viewO")){
+            DB jdbc = new DB();
+            String orderList = jdbc.allOrders();
+            returnText = orderList;
+        }
+        if(act.equals("addP")){
+            DB jdbc = new DB();
+            
+        }
+        return returnText;
     }
 }

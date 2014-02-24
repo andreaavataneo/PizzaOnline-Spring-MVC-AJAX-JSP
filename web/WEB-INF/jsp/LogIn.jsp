@@ -33,9 +33,11 @@
                             } else if (response.toString() === "admin") {
                                 $('#log').fadeOut("slow");
                                 $('#menu').fadeOut("slow").load('<c:url value="/resources/common/adminMenu.jsp"/>').fadeIn("slow");
+                                $('#info').html("Benvenuto nell'area amministratore! "+mail).fadeIn("slow");
                             } else {
                                 $('#log').fadeOut("slow");
                                 $('#menu').fadeOut("slow").load('<c:url value="/resources/common/clientMenu.jsp"/>').fadeIn("slow");
+                                $('#info').html("Benvenuto nell'area clienti! "+mail).fadeIn("slow");
                             }
                         },
                         error: function(e) {

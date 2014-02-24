@@ -13,6 +13,30 @@
         <%@include file="../../resources/common/head.jsp" %>
     </head>
     <body>
+        <script type="text/javascript">
+
+            $(document).ready(function() {
+                $('.button').click(function() {
+
+                    var act = this.id;
+
+                    $.ajax({
+                        type: "GET",
+                        url: act + "/action.htm",
+                        //data: data,
+                        success: function(response) {
+                            // we have the response
+                            $('#orders').replaceWith(response);
+                            $('#top').html("Ecco il contenuto che hai richiesto!");
+                        },
+                        error: function(e) {
+                            alert("Error: " + e);
+                        }
+                    });
+                });
+            });
+
+        </script>
         <header>
             <%@include file="../../resources/common/header.html" %>           
         </header>    
@@ -22,6 +46,10 @@
             </section>
             <section>
                 <%@include file="../../resources/common/formAdmin.jsp" %>
+            </section>
+            <section>
+                <p id="top"></p>
+                <table id="orders"></table>                
             </section>
         </article>
         <nav id="menu"> 

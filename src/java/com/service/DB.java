@@ -78,7 +78,8 @@ public class DB {
         }
         return true;
     }
-
+    
+    //verfica che la mail inserita non sia già presente nel DB
     public boolean checkMail(String email) {
         boolean out;
         try {
@@ -101,6 +102,7 @@ public class DB {
         return out;
     }
     
+    //restituisce un form con il quale è possiblile effettuare un'ordinazione
     public String menuOrder(){
         String out;
         try {
