@@ -14,13 +14,17 @@
     <body>
         <script type="text/javascript">
 
-            function setQty() {
+            $(document).ready(function() {
+                $('.button').click(function() {
 
-            }
+                    var idP = this.id;
+                    var qty = $('#qty').val();
+
+
+                });
+            });
 
             function doAjaxPost() {
-                var qty = $('#qty').val();
-
                 $.ajax({
                     type: "POST",
                     url: 'ClientArea.htm',

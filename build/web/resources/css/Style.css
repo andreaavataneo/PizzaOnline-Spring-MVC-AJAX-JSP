@@ -6,7 +6,7 @@
         Purpose of the stylesheet follows.
 */
 
-root {display: block;}
+body, html{ margin: 0;  padding:0; height: 100%; width: 100%;}
 
 .elastic{width:100%; height:auto;float:left;}
 
@@ -22,9 +22,9 @@ header{background-image: url(../images/banner-pizza.jpg); height: 20%; width: 10
 
 #pizzalist{ border: solid;}
 
-.hello{color: blue;}
+.main {display: block; border: solid; clear: both;}
 
-body, html{ margin: 0;  padding:0; height: 100%; width: 100%;}
+.hello{color: blue;}
 
 h1{color: blue; text-shadow: 5px 5px 10px deepskyblue; font-size: 300%; text-align: center; font-style: italic;}
 
@@ -32,9 +32,11 @@ h2 {font-size: 100%; text-align: center;}
 
 p{color: black; text-align: center;}
 
-article { float: right; width: 80%; height: 60%;}
+article { float: right; width: 80%; min-height: 100%;}
 
-nav {width: 20%; height:100%; float: left; background: #eee;}
+section {display: block;}
+
+nav {width: 20%; float: left; background: #eee; min-height: 100%;}
 
 nav a {display: block; background: #eee; color:#757575; text-decoration: none; border-bottom: 1px solid #ddd; padding: 1em;}
 
@@ -50,4 +52,4 @@ input{border: 1px solid;}
 
 .error{color: red;}
 
-footer{height: 20%; width: 100%; clear: both; background: #eee;}
+footer{height: 20%; width: 100%; clear: both; background: #eee; }

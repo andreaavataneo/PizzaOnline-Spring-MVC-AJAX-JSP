@@ -42,8 +42,7 @@ public class Mycontroller {
                 + " un'ordinazione dovrai entrare nell'area clienti. Se non sei cliente, Registrati!";
         maw.addObject("helloMessage", s);
         maw.addObject("menu", menu);
-        maw.addObject("session", user);
-        maw.addObject("proveNiko",jdbc.allOrders());
+        maw.addObject("session", user);        
         if (user.getEmail().equals("ospite")) {
             maw.addObject("menuType", guestMenu);
         } else if (user.getRole().equals("client")) {
@@ -116,6 +115,8 @@ public class Mycontroller {
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
     public ModelAndView adminArea(@ModelAttribute(value = "user") User user, @ModelAttribute(value="pizza") Pizza pizza) {
         ModelAndView maw = new ModelAndView("admin");
+        DB jdbc = new DB();
+        maw.addObject("allP",jdbc.listPizzas());
         maw.addObject("pizza", new Pizza());
         maw.addObject("helloMessage", "Area riservata agli amministratori, aggiunta/modifica/rimozione pizze");
         if (user.getEmail().equals("ospite")) {

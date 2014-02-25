@@ -6,6 +6,11 @@ package com.service;
 
 import java.sql.*;
 import com.user.User;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 /**
  *
  * @author Andrea
@@ -19,7 +24,7 @@ public class DB {
     /**Restituisce una tabella chiamata 'pizzalist' con le pizze appunto
      * 
      * @return out  
-     */
+     */    
     public String showMenu() {
         String out;
         try {
@@ -27,7 +32,7 @@ public class DB {
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS");
-            out = "<table id=\"pizzalist\"><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td></tr>";
+            out = "<table class=\"main\" id=\"pizzalist\"><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td></tr>";
             while (rs.next()) {
 
                 out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td></tr>";
@@ -40,6 +45,25 @@ public class DB {
         }
         return out;
     }
+    /**Restituisce una linkedlist con i nomi di tutte le pizze nel DB
+     * 
+     * @return 
+     */
+    public List listPizzas(){
+        List<String> allP = new LinkedList<>();
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS");            
+            while (rs.next()) {
+                allP.add(rs.getString("NAMEP"));
+            }            
+            st.close();
+            conn.close();
+        } catch (SQLException e) {  }
+        return allP;
+    }
     
     /**aggiunge una pizza assandogli i 3 campi
      * 
@@ -47,7 +71,7 @@ public class DB {
      * @param recipe
      * @param price 
      */
-    public void addPizza (String nameP, String recipe, double price) {
+    public boolean addPizza (String nameP, String recipe, double price) {
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
@@ -55,22 +79,24 @@ public class DB {
             st.executeUpdate("INSERT INTO pizzas (nameP, recipe, price) VALUES ('"+nameP+"', '"+recipe+"', "+price+")");
             st.close();
             conn.close();
-        } catch (SQLException e) {}
+        } catch (SQLException e) {return false;}
+        return true;
     }
     
     /**Rimuove la pizza con id_p pasato come parametro
      * 
      * @param id_p 
      */
-    public void delPizza (int id_p) {
+    public boolean delPizza (String namep) {
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
-            st.executeUpdate("DELETE FROM pizzas WHERE id_p="+id_p);
+            st.executeUpdate("DELETE FROM pizzas WHERE NAMEP="+namep);
             st.close();
             conn.close();
-        } catch (SQLException e) {}
+        } catch (SQLException e) { return false;}
+        return true;
     }
     
     /**modifica la pizza identificata dal id_p e ci assegna i nuovi campi
@@ -165,10 +191,10 @@ public class DB {
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS");
-            out = "<table id=\"pizzalist\"><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td></tr>";
+            out = "<table id=\"pizzalist\"><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td><td>Ordine</td></tr>";
             while (rs.next()) {
 
-                out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td><td><input id='"+rs.getString("NAMEP")+"' value='0'/></td></tr>";
+                out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td><td><input id=\""+rs.getString("NAMEP")+"\" value=\"0\"/></td></tr>";
             }
             out = out + "</table>";
             out = out +"<button onClicl='doAjaxPost();'>Ordina!</button>";
@@ -196,7 +222,7 @@ public class DB {
                                             "numberOf, datao, hour_time, shipped, received  from orders "+
                                             "order by datao,hour_time,id_u");
             
-            out = "<table id=\"orderlist\"><tr><td>Cliente</td><td>Destinazione</td><td>Pizza</td><td>Quante?</td><td>Data</td><td>Fascia Oraria</td><td>In viaggio?</td><td>Arrivata?</td></tr>";
+            out = "<table class=\"main\" id=\"orderlist\"><tr><td>Cliente</td><td>Destinazione</td><td>Pizza</td><td>Quante?</td><td>Data</td><td>Fascia Oraria</td><td>In viaggio?</td><td>Arrivata?</td></tr>";
             while (rs.next()) {
 
                 out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + rs.getString("datao") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";

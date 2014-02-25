@@ -4,6 +4,7 @@
  */
 package com.controller;
 
+import com.pizze.Pizza;
 import com.service.DB;
 import com.user.User;
 import org.springframework.stereotype.Controller;
@@ -66,19 +67,34 @@ public class FormController {
         return null;
     }
 
-    @RequestMapping(value = "/{act}/action", method = RequestMethod.GET)
+    @RequestMapping(value = "/{act}/action", method = RequestMethod.POST)
     @ResponseBody
-    public String orderList(@PathVariable String act) {
-        String returnText="Errore nell'interazione Ajax!";
-        if(act.equals("viewO")){
+    public String orderList(@PathVariable String act, @ModelAttribute(value = "pizza") Pizza pizza) {
+        String returnText = "<p>Errore nell'interazione Ajax!</p>";
+        if (act.equals("viewO")) {
             DB jdbc = new DB();
             String orderList = jdbc.allOrders();
             returnText = orderList;
         }
-        if(act.equals("addP")){
+        if (act.equals("addP")) {
             DB jdbc = new DB();
-            
+            if (jdbc.addPizza(pizza.getName(), pizza.getDescription(), pizza.getPrice())) {
+                returnText = "<p>Pizza aggiunta con successo!</p>\n" + jdbc.showMenu();
+            } else {
+                returnText = "<p>Errore nell'interazione con il DB.</p>";
+            }
         }
+        return returnText;
+    }
+    
+    @RequestMapping(value = "/{id}/modify", method = RequestMethod.POST)
+    @ResponseBody
+    public String modify(@PathVariable String id, @ModelAttribute(value = "pizza") Pizza pizza){
+        String returnText="<p>Errore nell'interazione con il DB</p>"+id;
+        DB jdbc = new DB();
+        if(jdbc.delPizza(id)){
+            returnText="<p>Cancellazione effettuata con successo! "+jdbc.showMenu();
+        };
         return returnText;
     }
 }
