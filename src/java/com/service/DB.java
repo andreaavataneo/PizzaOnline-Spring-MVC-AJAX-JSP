@@ -49,19 +49,20 @@ public class DB {
      * 
      * @return 
      */
-    public List listPizzas(){
-        List<String> allP = new LinkedList<>();
+    public Map listPizzas(){
+        Map<String, String> allP = new HashMap<>();
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS");            
             while (rs.next()) {
-                allP.add(rs.getString("NAMEP"));
+                allP.put(rs.getString("ID_P") ,rs.getString("NAMEP"));
             }            
             st.close();
             conn.close();
         } catch (SQLException e) {  }
+        allP.put(null,"<Nuova Pizza>");
         return allP;
     }
     

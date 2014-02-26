@@ -10,7 +10,7 @@ body, html{ margin: 0;  padding:0; height: 100%; width: 100%;}
 
 .elastic{width:100%; height:auto;float:left;}
 
-fieldset{font:100% sans-serif; border-radius: 15px; text-align: left;}
+fieldset{font:100% sans-serif; border-radius: 15px; text-align: center;}
 
 fieldset dd {float: left; width: 10%;  padding: 1%;}
 
@@ -35,6 +35,11 @@ p{color: black; text-align: center;}
 article { float: right; width: 80%; min-height: 100%;}
 
 section {display: block;}
+
+.formAdm {
+    float:left;
+    width:50%;
+}
 
 nav {width: 20%; float: left; background: #eee; min-height: 100%;}
 

@@ -16,22 +16,49 @@
         <script type="text/javascript">
 
             $(document).ready(function() {
-                $('#addP,#viewO').click(function() {
+                
+                $('#idSel').click(function() {
+                   var id = $('#idSel').val();
+                   $('#top').html(id);
+                   $('#description').val("aaaaaaa");
+                   
+                   $.ajax({
+                        type: "POST",
+                        url: id+"/loadP.htm",
+                        
+                        success: function(response) {
+                            // we have the response
+                            var split = response.split("%");
+                            $('#top').html(id);
+                            
+                            //$('#description').attr('value',split[1]);
+                            //$('#price').attr('value',split[2]);
+                            
+                        },
+                        error: function(e) {
+                            alert("Error: " + e);
+                        }
+                    });
+                });
+                
+                
+                $('#addP').click(function() {
 
-                    var name = $('#name').val();
+                    var name = $('#nameP').val();
                     var descr = $('#description').val();
                     var price = $('#price').val();
+                    var id_p = $('#').val();
 
-                    //if (validateForm(name, descr, price)) {
+                    if (validateForm(name, descr, price)) {
 
-                    var data = $('#add').serialize();
+                    var data = $('#formAddP').serialize();
                     var act = this.id;
 
                     $.ajax({
                         type: "POST",
-                        url: act + "/action.htm",
+                        url: act+"/"+id_p+"/action.htm",
                         data: data,
-                        //data: data,
+                        
                         success: function(response) {
                             // we have the response
                             $('.main').replaceWith(response);
@@ -41,7 +68,7 @@
                             alert("Error: " + e);
                         }
                     });
-                    // }
+                   }
                 });
 
                 $('#delP,#modP').click(function() {
@@ -56,8 +83,7 @@
                     var id = $('#nameSel').val();
                     $.ajax({
                         type: "POST",
-                        url: id + "/modify.htm",                        
-
+                        url: id + "/modify.htm",
                         success: function(response) {
                             // we have the response
                             $('.main').replaceWith(response);
@@ -98,11 +124,15 @@
             <section>
                 <p class="hello">${helloMessage}</p>                 
             </section>
+
+            <%@include file="../../resources/common/formAdmin.jsp" %>
+
             <section>
-                <%@include file="../../resources/common/formAdmin.jsp" %>
-            </section>
-            <section>
+                <p hidden="true" class="error" id="name_err">Non hai inserito il nome della pizza!</p>
+                <p hidden="true" class="error" id="descr_err">Non hai inserito la ricetta della pizza!</p>
+                <p hidden="true" class="error" id="price_err">Non hai inserito il prezzo della pizza!</p>  
                 <p id="top"></p>
+
                 <table class="main"></table>                
             </section>
         </article>

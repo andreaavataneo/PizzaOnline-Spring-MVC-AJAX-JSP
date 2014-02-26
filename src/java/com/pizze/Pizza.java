@@ -21,6 +21,7 @@ public class Pizza {
     }
     
     public Pizza() {
+        this.name = "Nuova pizza";
         
     }
 
