@@ -96,9 +96,17 @@ public class DB {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
-            st.executeUpdate("INSERT INTO pizzas (nameP, recipe, price) VALUES ('" + nameP + "', '" + recipe + "', " + price + ")");
-            st.close();
-            conn.close();
+            
+            /*ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS WHERE nameP=" + nameP);
+            if (rs.next()) {
+                st.close();
+                conn.close();
+                return false;
+            } else {*/
+                st.executeUpdate("INSERT INTO pizzas (nameP, recipe, price) VALUES ('" + nameP + "', '" + recipe + "', " + price + ")");
+                st.close();
+                conn.close();
+            //}
         } catch (SQLException e) {
             return false;
         }
@@ -132,7 +140,7 @@ public class DB {
      * @param recipe
      * @param price
      */
-    public void modPizza(int id_p, String nameP, String recipe, double price) {
+    public void modPizza(Integer id_p, String nameP, String recipe, double price) {
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);

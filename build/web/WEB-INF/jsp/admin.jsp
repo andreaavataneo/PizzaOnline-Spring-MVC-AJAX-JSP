@@ -39,13 +39,13 @@
                 });
 
 
-                $('#addP,#modP,#delP').click(function() {
+                $('#aggiungere,#modificare,#cancellare').click(function() {
 
                     var name = $('#nameP').val();
                     var descr = $('#description').val();
                     var price = $('#price').val();
                     var id_p = $('#idSel').val();
-                    var conf = window.confirm("Sei sicuro di voler modificare il DB?");
+                    var conf = window.confirm("Sei sicuro di volere "+this.id+" la pizza?");
 
                     if (validateForm(name, descr, price)&&conf===true) {                     
 
@@ -59,6 +59,7 @@
                             success: function(response) {
                                 // we have the response
                                 $('.main').replaceWith(response);
+                                $('#formAdm').reload();
                                 $('#top').html("Ecco il contenuto che hai richiesto!");
                             },
                             error: function(e) {
@@ -112,8 +113,7 @@
             <section>
                 <p class="hello">${helloMessage}</p>                 
             </section>
-
-            <%@include file="../../resources/common/formAdmin.jsp" %>
+                <%@include file="../../resources/common/formAdmin.jsp" %>
 
             <section>
                 <p hidden="true" class="error" id="name_err">Non hai inserito il nome della pizza!</p>

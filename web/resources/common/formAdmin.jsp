@@ -3,7 +3,7 @@
     Created on : 19-feb-2014, 12.09.17
     Author     : Andrea
 --%>
-<section class="formAdm">
+<section id="formAdm">
     <form:form commandName="pizza" id="formAddP"> 
         <fieldset>
             <legend>Aggiungi, modifica o elimina una pizza</legend>
@@ -19,9 +19,9 @@
             </dl>
         </fieldset>
         <fieldset>
-            <input class="button" id="addP" type="button" value="Aggiungi pizza!"/>
-            <input class="button" id="modP" type="button" value="Modifica pizza!"/>
-            <input class="button" id="delP" type="button" value="Cancella pizza!"/>     
+            <input class="button" id="aggiungere" type="button" value="Aggiungi pizza!"/>
+            <input class="button" id="modificare" type="button" value="Modifica pizza!"/>
+            <input class="button" id="cancellare" type="button" value="Cancella pizza!"/>     
         </fieldset>
     </form:form>
     <form:form commandName="pizza" id="Orders">

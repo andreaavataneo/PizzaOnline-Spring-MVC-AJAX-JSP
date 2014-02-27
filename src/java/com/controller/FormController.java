@@ -71,20 +71,20 @@ public class FormController {
     @ResponseBody
     public String orderList(@PathVariable String act, @PathVariable Integer id, @ModelAttribute(value = "pizza") Pizza pizza) {
         String returnText = "<p>Errore nell'interazione Ajax!</p>";
-        if (act.equals("modP")) {
+        if (act.equals("modificare")) {
             DB jdbc = new DB();
             jdbc.modPizza(id, pizza.getName(), pizza.getDescription(), pizza.getPrice());
             returnText = "Pizza modificata con successo!\n"+jdbc.showMenu();
         }
-        if (act.equals("addP")) {
+        if (act.equals("aggiungere")) {
             DB jdbc = new DB();
             if (jdbc.addPizza(pizza.getName(), pizza.getDescription(), pizza.getPrice())) {
                 returnText = "<p>Pizza aggiunta con successo!</p>\n" + jdbc.showMenu();
             } else {
-                returnText = "<p>Errore nell'interazione con il DB.</p>";
+                returnText = "<p>Errore nell'interazione con il DB. La pizza potrebbe essere gi&agrave; presente.</p>";
             }
         }
-        if(act.equals("delP")){
+        if(act.equals("cancellare")){
             DB jdbc = new DB();
             if (jdbc.delPizza(id)) {
                 returnText = "<p>Pizza eliminata con successo!</p>\n" + jdbc.showMenu();
