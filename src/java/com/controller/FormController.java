@@ -67,14 +67,14 @@ public class FormController {
         return null;
     }
 
-    @RequestMapping(value = "/{act}/{id}/action", method = RequestMethod.POST)
+    @RequestMapping(value = "/{act}/{id}/modify", method = RequestMethod.POST)
     @ResponseBody
-    public String orderList(@PathVariable String act, @PathVariable int id, @ModelAttribute(value = "pizza") Pizza pizza) {
+    public String orderList(@PathVariable String act, @PathVariable Integer id, @ModelAttribute(value = "pizza") Pizza pizza) {
         String returnText = "<p>Errore nell'interazione Ajax!</p>";
         if (act.equals("modP")) {
             DB jdbc = new DB();
             jdbc.modPizza(id, pizza.getName(), pizza.getDescription(), pizza.getPrice());
-            returnText = "Pizza modificata con successo!";
+            returnText = "Pizza modificata con successo!\n"+jdbc.showMenu();
         }
         if (act.equals("addP")) {
             DB jdbc = new DB();
@@ -84,29 +84,36 @@ public class FormController {
                 returnText = "<p>Errore nell'interazione con il DB.</p>";
             }
         }
+        if(act.equals("delP")){
+            DB jdbc = new DB();
+            if (jdbc.delPizza(id)) {
+                returnText = "<p>Pizza eliminata con successo!</p>\n" + jdbc.showMenu();
+            } else {
+                returnText = "<p>Errore nell'interazione con il DB.</p>";
+            }
+        }
         return returnText;
     }
-    
-    @RequestMapping(value = "/{id}/modify", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/viewO", method = RequestMethod.POST)
     @ResponseBody
-    public String modify(@PathVariable String id, @ModelAttribute(value = "pizza") Pizza pizza){
-        String returnText="<p>Errore nell'interazione con il DB</p>"+id;
+    public String modify(@ModelAttribute(value = "pizza") Pizza pizza, BindingResult result) {
+        String returnText = "<p>Errore nell'interazione con il DB</p>";
         DB jdbc = new DB();
-        if(jdbc.delPizza(id)){
-            returnText="<p>Cancellazione effettuata con successo! "+jdbc.showMenu();
+        if (!result.hasErrors()) {
+            returnText = jdbc.allOrders();
         };
         return returnText;
     }
-    
-    @RequestMapping(value = "/{id}/loadP", method = RequestMethod.POST)
-    @ResponseBody
-    public String loadP(@PathVariable String id, @ModelAttribute(value = "pizza") Pizza pizza){
-        String returnText="<p>Errore nell'interazione con il DB</p>"+id;
-        DB jdbc = new DB();
-        Pizza temp = new Pizza("prova1", "lo sai dai", 333);
-        
 
-        
-        return "aaa%sdahusdha%333";
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String loadP(@ModelAttribute(value = "pizza") Pizza pizza, @PathVariable Integer id, BindingResult result) {
+        String returnText = "<p>Errore nell'interazione con il DB</p>";    
+        //if (!result.hasErrors()) {
+            DB jdbc = new DB();            
+            returnText=jdbc.getPizzaData(id);        
+        //}
+        return returnText;
     }
 }

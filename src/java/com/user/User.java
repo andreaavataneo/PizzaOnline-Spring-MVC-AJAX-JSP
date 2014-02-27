@@ -4,10 +4,13 @@
  */
 package com.user;
 
+import org.springframework.context.annotation.Scope;
+
 /**
  *
  * @author Andrea
  */
+@Scope("session")
 public class User {
 
     private String name;

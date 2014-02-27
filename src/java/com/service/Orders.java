@@ -4,10 +4,7 @@
  */
 package com.service;
 
-import com.pizze.Pizza;
 import java.util.LinkedList;
-import java.util.List;
-
 /**
  *
  * @author Andrea
@@ -15,6 +12,10 @@ import java.util.List;
 public class Orders {
     
     private String email;
-    private LinkedList<Pizza> order = new LinkedList<Pizza>();
+    private LinkedList<String> order = new LinkedList<>();
+
+    public Orders(String email) {
+        this.email = email;
+    }
     
 }

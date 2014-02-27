@@ -16,74 +16,63 @@
         <script type="text/javascript">
 
             $(document).ready(function() {
-                
+
                 $('#idSel').click(function() {
-                   var id = $('#idSel').val();
-                   $('#top').html(id);
-                   $('#description').val("aaaaaaa");
-                   
-                   $.ajax({
+
+                    var id = this.value;
+
+                    $.ajax({
                         type: "POST",
-                        url: id+"/loadP.htm",
-                        
+                        url: id + ".htm",
                         success: function(response) {
                             // we have the response
                             var split = response.split("%");
-                            $('#top').html(id);
-                            
-                            //$('#description').attr('value',split[1]);
-                            //$('#price').attr('value',split[2]);
-                            
+
+                            $('#nameP').val(split[0]);
+                            $('#description').val(split[1]);
+                            $('#price').val(split[2]);
                         },
                         error: function(e) {
                             alert("Error: " + e);
                         }
                     });
                 });
-                
-                
-                $('#addP').click(function() {
+
+
+                $('#addP,#modP,#delP').click(function() {
 
                     var name = $('#nameP').val();
                     var descr = $('#description').val();
                     var price = $('#price').val();
-                    var id_p = $('#').val();
+                    var id_p = $('#idSel').val();
+                    var conf = window.confirm("Sei sicuro di voler modificare il DB?");
 
-                    if (validateForm(name, descr, price)) {
+                    if (validateForm(name, descr, price)&&conf===true) {                     
 
-                    var data = $('#formAddP').serialize();
-                    var act = this.id;
+                        var data = $('#formAddP').serialize();
+                        var act = this.id;
 
-                    $.ajax({
-                        type: "POST",
-                        url: act+"/"+id_p+"/action.htm",
-                        data: data,
-                        
-                        success: function(response) {
-                            // we have the response
-                            $('.main').replaceWith(response);
-                            $('#top').html("Ecco il contenuto che hai richiesto!");
-                        },
-                        error: function(e) {
-                            alert("Error: " + e);
-                        }
-                    });
-                   }
+                        $.ajax({
+                            type: "POST",
+                            url: act + "/" + id_p + "/modify.htm",
+                            data: data,
+                            success: function(response) {
+                                // we have the response
+                                $('.main').replaceWith(response);
+                                $('#top').html("Ecco il contenuto che hai richiesto!");
+                            },
+                            error: function(e) {
+                                alert("Error: " + e);
+                            }
+                        });
+                    }
                 });
 
-                $('#delP,#modP').click(function() {
+                $('#viewO').click(function() {
 
-
-                    //var name = $('#nameNew').val();
-                    //var descr = $('#descriptionNew').val();
-                    //var price = $('#priceNew').val();
-
-                    //if (validateForm(name, descr, price)) {
-
-                    var id = $('#nameSel').val();
                     $.ajax({
                         type: "POST",
-                        url: id + "/modify.htm",
+                        url: "viewO.htm",
                         success: function(response) {
                             // we have the response
                             $('.main').replaceWith(response);
@@ -93,7 +82,6 @@
                             alert("Error: " + e);
                         }
                     });
-                    //  }
                 });
             });
 
@@ -116,7 +104,7 @@
                     return true;
                 }
             }
-        </script>
+        </script>        
         <header>
             <%@include file="../../resources/common/header.html" %>           
         </header>    
@@ -132,8 +120,7 @@
                 <p hidden="true" class="error" id="descr_err">Non hai inserito la ricetta della pizza!</p>
                 <p hidden="true" class="error" id="price_err">Non hai inserito il prezzo della pizza!</p>  
                 <p id="top"></p>
-
-                <table class="main"></table>                
+                <table class="main"></table>                 
             </section>
         </article>
         <nav id="menu"> 

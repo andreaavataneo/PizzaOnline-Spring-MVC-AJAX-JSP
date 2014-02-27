@@ -36,10 +36,10 @@ article { float: right; width: 80%; min-height: 100%;}
 
 section {display: block;}
 
-.formAdm {
+/**.formAdm {
     float:left;
     width:50%;
-}
+}**/
 
 nav {width: 20%; float: left; background: #eee; min-height: 100%;}
 
