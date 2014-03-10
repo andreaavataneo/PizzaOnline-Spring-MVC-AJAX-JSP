@@ -102,6 +102,7 @@ public class Mycontroller {
         maw.addObject("order", jdbc.menuOrder());
         maw.addObject("message", "Pagina di ordinazione");
         maw.addObject("user", user);
+        maw.addObject("provaOrdini", jdbc.clientOrders(user.getId_u()));
         if (user.getEmail().equals("ospite")) {
             maw.addObject("menuType", guestMenu);
         } else if (user.getRole().equals("client")) {

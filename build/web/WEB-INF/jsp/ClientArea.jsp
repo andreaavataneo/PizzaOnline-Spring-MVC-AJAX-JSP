@@ -51,6 +51,9 @@
                 ${order}
                 <p id="info"></p>
             </section>
+            <section>
+                ${provaOrdini}
+            </section>
         </article>
         <nav id="menu"> 
             ${menuType}            

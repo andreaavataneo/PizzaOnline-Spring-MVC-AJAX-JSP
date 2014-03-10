@@ -12,7 +12,8 @@ import org.springframework.context.annotation.Scope;
  */
 @Scope("session")
 public class User {
-
+    
+    private int id_u;
     private String name;
     private String surname;
     private String phone;
@@ -41,6 +42,14 @@ public class User {
        this.role="guest";
     }
         
+    public int getId_u() {
+        return this.id_u;
+    }
+    
+    public void setId_u(int id) {
+        this.id_u=id;
+    }
+    
     public String getName() {
         return name;
     }

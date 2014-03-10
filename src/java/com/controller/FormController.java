@@ -33,6 +33,7 @@ public class FormController {
             out = "Errore nell'interazione Ajax!";
         } else if (jdbc.logger(user)) {
             out = "Hai effettuato l'accesso con successo! " + user.getEmail(); //successo 
+            
             if (user.getRole().equals("admin")) {
                 out = "admin";
             }
@@ -75,6 +76,7 @@ public class FormController {
             DB jdbc = new DB();
             jdbc.modPizza(id, pizza.getName(), pizza.getDescription(), pizza.getPrice());
             returnText = "Pizza modificata con successo!\n"+jdbc.showMenu();
+            
         }
         if (act.equals("aggiungere")) {
             DB jdbc = new DB();

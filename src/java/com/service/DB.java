@@ -96,16 +96,16 @@ public class DB {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
-            
+
             /*ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS WHERE nameP=" + nameP);
-            if (rs.next()) {
-                st.close();
-                conn.close();
-                return false;
-            } else {*/
-                st.executeUpdate("INSERT INTO pizzas (nameP, recipe, price) VALUES ('" + nameP + "', '" + recipe + "', " + price + ")");
-                st.close();
-                conn.close();
+             if (rs.next()) {
+             st.close();
+             conn.close();
+             return false;
+             } else {*/
+            st.executeUpdate("INSERT INTO pizzas (nameP, recipe, price) VALUES ('" + nameP + "', '" + recipe + "', " + price + ")");
+            st.close();
+            conn.close();
             //}
         } catch (SQLException e) {
             return false;
@@ -163,6 +163,7 @@ public class DB {
             rs.next();
             if (rs.getRow() == 1) {
                 out = true;
+                user.setId_u(rs.getInt("id_u"));
                 user.setName(rs.getString("NAMEU"));
                 user.setSurname(rs.getString("SURNAME"));
                 user.setAddress(rs.getString("ADDRESS"));
@@ -220,19 +221,37 @@ public class DB {
 
     //restituisce un form con il quale è possiblile effettuare un'ordinazione
     public String menuOrder() {
-        String out;
+        String out = "";
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS");
-            out = "<table id=\"pizzalist\"><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td><td>Ordine</td></tr>";
+            /*<form:form commandName="pizza" id="formAddP"> 
+             <fieldset>
+             <legend>Aggiungi, modifica o elimina una pizza</legend>
+             <dl> 
+             <dt><label>Seleziona la pizza</label></dt>
+             <dd><form:select path="id" id="idSel" items="${allP}"/></dd>
+             <dt><label>Nome: </label></dt>
+             <dd><form:input path="name" id="nameP" type="text" placeholder="Nome nuova pizza" required="on" autofocus="on" ></form:input></dd>    
+             <dt><label>Ricetta: </label></dt>
+             <dd><form:input path="description" id="description" autofocus="on" type="text" placeholder="Specifiche ingredienti" required="on"></form:input></dd>
+             <dt><label>Prezzo: </label></dt>
+             <dd><form:input path="price" id="price" type="number" required="on" autofocus="on"></form:input></dd>            
+             </dl>
+             </fieldset>*/
+            out = "<form:form commandName='newOrder' id='newOrder'>"
+                    + "<fieldset><legend>Crea nuovo ordine</legend>"
+                    + "<table id='pizzalist'><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td><td>Ordine</td></tr>";
+
             while (rs.next()) {
 
-                out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td><td><input id=\"" + rs.getString("NAMEP") + "\" value=\"0\"/></td></tr>";
+                out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td><td><input id='qu" + rs.getString("id_p") + "' value='0'/></td></tr>";
             }
-            out = out + "</table>";
-            out = out + "<button onClicl='doAjaxPost();'>Ordina!</button>";
+            out = out + "</table><input type='button' class='button' onClick='doAjaxPost();' value='Ordina'/>"
+                    + "</fieldset></form:form>";
+                    
             st.close();
             conn.close();
         } catch (SQLException e) {
@@ -303,6 +322,86 @@ public class DB {
             out = e.getMessage();
         }
         return out;
+
+    }
+
+    /**
+     * restituisce una tabella id='clientOrders' con gli ordini di un
+     * determinato cliente (data >= a oggi)
+     *
+     */
+    public String clientOrders(int id_u) {
+        String result = "";
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            //ResultSet rs = st.executeQuery("select * from pizzas where 1!=1");
+            ResultSet rs = st.executeQuery("select (select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP,"
+                    + "numberOf, datao, hour_time, shipped, received, id_o  from orders "
+                    + "where shipped=false AND id_u=" + id_u + " AND datao >= current_date order by datao,hour_time");
+
+            //prove sul resultset
+            /*result += "valore di id_u: " + id_u + "<br>";
+             result += "numero della riga a query eseguita senza next:" + rs.getRow() + " <br>";
+             rs.next();
+             result += rs.getString("nameP") + " " + rs.getString("numberOf") + " " + rs.getString("datao") + "<br>";
+
+             result += "numero della riga a query eseguita dopo next:" + rs.getRow() + " <br>";*/
+
+            /*rs.last();
+             if (rs.getRow() == 0) {
+             return "Al momento non ci sono ordini in sospeso";
+             }
+             rs.first();*/
+
+
+            rs.next();
+            if (rs.getRow() != 1) {
+                rs.close();
+                st.close();
+                conn.close();
+                return "<section class='ordini'>Al momento non ci sono ordini in sospeso</section>";
+            }
+            String dataOld = rs.getString("datao");
+            Integer hourOld = rs.getInt("hour_time");
+            int c = 1;
+            result = "<section class='ordini'>"
+                    + "<form:form commandName='ordine' id='ord" + c + "' >"
+                    + "<fieldset>"
+                    + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>"
+                    + "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>"
+                    + "<input type='hidden' name='datao' value='" + rs.getString("datao") + "'/>"
+                    + "<input type='hidden' name='hour_time' value='" + rs.getInt("hour_time") + "'/>"
+                    + "<table><tr><td>Pizza</td><td>Quantit&agrave;</td></tr>"
+                    + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+            while (rs.next()) {
+
+                if ((!dataOld.equals(rs.getString("datao"))) || (hourOld != rs.getInt("hour_time"))) {
+                    c++;
+                    result = result + "</table></fieldset></form:form></section>"
+                            + "<section class='ordini'>"
+                            + "<form:form commandName='ordine' id='ord" + c + "' >"
+                            + "<fieldset>"
+                            + "<legend>Ordine per il: " + rs.getString("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>"
+                            + "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>"
+                            + "<input type='hidden' name='datao' value='" + rs.getString("datao") + "'/>"
+                            + "<input type='hidden' name='hour_time' value='" + rs.getInt("hour_time") + "'/>"
+                            + "<table><tr><td>Pizza</td><td>Quantit&agrave;</td></tr>";
+                }
+
+                result = result + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+                dataOld = rs.getString("datao");
+                hourOld = rs.getInt("hour_time");
+            }
+            result = result + "</table></fieldset></form:form></section>";
+            rs.close();
+            st.close();
+            conn.close();
+        } catch (SQLException e) {
+            result += e.getMessage();
+        }
+        return result;
 
     }
 
