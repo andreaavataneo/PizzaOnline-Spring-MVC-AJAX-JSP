@@ -15,29 +15,30 @@
         <script type="text/javascript">
 
             $(document).ready(function() {
-                $('.button').click(function() {
+                $('#newOrder').submit(function() {
 
-                    var idP = this.id;
-                    var qty = $('#qty').val();
-
-
+                    
+                    alert($('#newOrder').serialize());
+                  
+                    //var variabili = $('#newOrder').serialize();
+                    $('#info').html("Try this shit");
+                    $.ajax({
+                        type: "POST",
+                        url: "/createOrder.htm",
+                        data: "aaaa=bbbb",
+                        success: function(response) {
+                            // we have the response                             
+                            //$('#info').html(response);
+                            $('#info').html("uffa");
+                        },
+                        error: function(e) {
+                            alert('Error: ' + e);
+                        }
+                    });
                 });
             });
 
-            function doAjaxPost() {
-                $.ajax({
-                    type: "POST",
-                    url: 'ClientArea.htm',
-                    data: data,
-                    success: function(response) {
-                        // we have the response                             
-                        $('#info').html(response);
-                    },
-                    error: function(e) {
-                        alert('Error: ' + e);
-                    }
-                });
-            }
+
 
         </script>
         <header>
@@ -52,7 +53,7 @@
                 <p id="info"></p>
             </section>
             <section>
-                ${provaOrdini}
+                ${ClientOrders}
             </section>
         </article>
         <nav id="menu"> 

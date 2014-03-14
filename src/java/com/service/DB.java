@@ -241,16 +241,19 @@ public class DB {
              <dd><form:input path="price" id="price" type="number" required="on" autofocus="on"></form:input></dd>            
              </dl>
              </fieldset>*/
-            out = "<form:form commandName='newOrder' id='newOrder'>"
+            out = "<form id='newOrder'>"
                     + "<fieldset><legend>Crea nuovo ordine</legend>"
                     + "<table id='pizzalist'><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td><td>Ordine</td></tr>";
 
             while (rs.next()) {
 
-                out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td><td><input id='qu" + rs.getString("id_p") + "' value='0'/></td></tr>";
+                out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td><td><input type='text' name='qu" + rs.getString("id_p") + "' id='qu" + rs.getString("id_p") + "'value='0'/></td></tr>";
             }
-            out = out + "</table><input type='button' class='button' onClick='doAjaxPost();' value='Ordina'/>"
-                    + "</fieldset></form:form>";
+            out = out + "</table>"
+                    + "A che ora ? <input type='time' id='hour_time'/>"
+                    + "Quando ? <input type='date' id='dateo'/>"
+                    + "<input type='submit' class='button' id='Ordina' value='Ordina'/>"
+                    + "</fieldset><form>";
                     
             st.close();
             conn.close();
@@ -330,6 +333,8 @@ public class DB {
      * determinato cliente (data >= a oggi)
      *
      */
+    
+    //Aggiungere controllo per mettere dinamicamente elimina ordine o conferma ricezione !!!
     public String clientOrders(int id_u) {
         String result = "";
         try {
