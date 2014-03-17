@@ -110,9 +110,7 @@
             <%@include file="../../resources/common/header.html" %>           
         </header>    
         <article>
-            <section>
-                <p class="hello">${helloMessage}</p>                 
-            </section>
+            
                 <%@include file="../../resources/common/formAdmin.jsp" %>
 
             <section>

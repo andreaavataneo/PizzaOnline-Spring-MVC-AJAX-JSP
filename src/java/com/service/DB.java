@@ -8,6 +8,10 @@ import java.sql.*;
 import com.user.User;
 import java.util.HashMap;
 import java.util.Map;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  *
@@ -247,14 +251,16 @@ public class DB {
 
             while (rs.next()) {
 
-                out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td><td><input type='text' name='qu" + rs.getString("id_p") + "' id='qu" + rs.getString("id_p") + "'value='0'/></td></tr>";
+                out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td><td><input type='number' name='q" + rs.getString("id_p") + "' id='q" + rs.getString("id_p") + "' value='0' min='0' max='99'/></td></tr>";
             }
+            GregorianCalendar gc = new GregorianCalendar();
+
             out = out + "</table>"
-                    + "A che ora ? <input type='time' id='hour_time'/>"
-                    + "Quando ? <input type='date' id='dateo'/>"
+                    + "A che ora ? <input type='time' id='hour_time' name='hour_time' min='"+ gc.get(Calendar.HOUR) + ":" + gc.get(Calendar.MINUTE) +"' />"
+                    + "Quando ? <input type='date' id='dateo' name='dateo' min='"+ gc.get(Calendar.YEAR) + "-" + gc.get(Calendar.MONTH) + "-" + gc.get(Calendar.DAY_OF_MONTH) +"'/>"
                     + "<input type='submit' class='button' id='Ordina' value='Ordina'/>"
-                    + "</fieldset><form>";
-                    
+                    + "</fieldset></form>";
+
             st.close();
             conn.close();
         } catch (SQLException e) {
@@ -333,7 +339,6 @@ public class DB {
      * determinato cliente (data >= a oggi)
      *
      */
-    
     //Aggiungere controllo per mettere dinamicamente elimina ordine o conferma ricezione !!!
     public String clientOrders(int id_u) {
         String result = "";
@@ -369,37 +374,37 @@ public class DB {
                 return "<section class='ordini'>Al momento non ci sono ordini in sospeso</section>";
             }
             String dataOld = rs.getString("datao");
-            Integer hourOld = rs.getInt("hour_time");
+            String hourOld = rs.getString("hour_time");
             int c = 1;
             result = "<section class='ordini'>"
-                    + "<form:form commandName='ordine' id='ord" + c + "' >"
+                    + "<form class='orderM' name='ord" + c + "' id='ord" + c + "' >"
                     + "<fieldset>"
                     + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>"
                     + "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>"
-                    + "<input type='hidden' name='datao' value='" + rs.getString("datao") + "'/>"
-                    + "<input type='hidden' name='hour_time' value='" + rs.getInt("hour_time") + "'/>"
+                    + "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
+                    + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
                     + "<table><tr><td>Pizza</td><td>Quantit&agrave;</td></tr>"
                     + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
             while (rs.next()) {
 
-                if ((!dataOld.equals(rs.getString("datao"))) || (hourOld != rs.getInt("hour_time"))) {
+                if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time")))) {
                     c++;
-                    result = result + "</table></fieldset></form:form></section>"
+                    result = result + "</table></fieldset></form></section>"
                             + "<section class='ordini'>"
-                            + "<form:form commandName='ordine' id='ord" + c + "' >"
+                            + "<form class='orderM' name='ord" + c + "' id='ord" + c + "'  >"
                             + "<fieldset>"
                             + "<legend>Ordine per il: " + rs.getString("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>"
                             + "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>"
-                            + "<input type='hidden' name='datao' value='" + rs.getString("datao") + "'/>"
-                            + "<input type='hidden' name='hour_time' value='" + rs.getInt("hour_time") + "'/>"
+                            + "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
+                            + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
                             + "<table><tr><td>Pizza</td><td>Quantit&agrave;</td></tr>";
                 }
 
                 result = result + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
                 dataOld = rs.getString("datao");
-                hourOld = rs.getInt("hour_time");
+                hourOld = rs.getString("hour_time");
             }
-            result = result + "</table></fieldset></form:form></section>";
+            result = result + "</table></fieldset></form></section>";
             rs.close();
             st.close();
             conn.close();
@@ -449,7 +454,7 @@ public class DB {
      * @param datao
      * @param hour_time
      */
-    public void sendOrder(int id_u, String datao, int hour_time) {
+    public void sendOrder(int id_u, String datao, String hour_time) {
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
@@ -457,7 +462,7 @@ public class DB {
             st.executeUpdate("UPDATE orders SET shipped=true where "
                     + "id_u=" + id_u + " AND "
                     + "datao='" + datao + "' AND "
-                    + "hour_time=" + hour_time);
+                    + "hour_time='" + hour_time + "'");
             st.close();
             conn.close();
         } catch (SQLException e) {
@@ -471,7 +476,7 @@ public class DB {
      * @param datao
      * @param hour_time
      */
-    public void confirmOrder(int id_u, String datao, int hour_time) {
+    public void confirmOrder(int id_u, String datao, String hour_time) {
         String out;
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
@@ -480,7 +485,32 @@ public class DB {
             st.executeUpdate("UPDATE orders SET received=true where "
                     + "id_u='" + id_u + "' AND "
                     + "datao='" + datao + "' AND "
-                    + "hour_time=" + hour_time);
+                    + "hour_time='" + hour_time + "'");
+            st.close();
+            conn.close();
+        } catch (SQLException e) {
+        }
+    }
+
+    public void addOrder(int id_u, int id_p, int numberOf, String datao, String hour_time) {
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            st.executeUpdate("INSERT INTO orders(id_u, id_p, numberOf, datao, hour_time, shipped, received) "
+                    + "VALUES (" + id_u + ", " + id_p + ", " + numberOf + ", '" + datao + "', '" + hour_time + "', false, false)");
+            st.close();
+            conn.close();
+        } catch (SQLException e) {
+        }
+    }
+    
+    public void delOrder(int id_u, String datao, String hour_time) {
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            st.executeUpdate("DELETE FROM orders WHERE id_u="+ id_u + " AND datao='" + datao + "' AND hour_time='" + hour_time + "'");
             st.close();
             conn.close();
         } catch (SQLException e) {

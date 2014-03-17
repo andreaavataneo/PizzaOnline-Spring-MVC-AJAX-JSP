@@ -7,6 +7,7 @@ package com.controller;
 import com.pizze.Pizza;
 import com.service.DB;
 import com.user.User;
+import java.util.StringTokenizer;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,7 +35,7 @@ public class FormController {
             out = "Errore nell'interazione Ajax!";
         } else if (jdbc.logger(user)) {
             out = "Hai effettuato l'accesso con successo! " + user.getEmail(); //successo 
-            
+
             if (user.getRole().equals("admin")) {
                 out = "admin";
             }
@@ -76,8 +77,8 @@ public class FormController {
         if (act.equals("modificare")) {
             DB jdbc = new DB();
             jdbc.modPizza(id, pizza.getName(), pizza.getDescription(), pizza.getPrice());
-            returnText = "Pizza modificata con successo!\n"+jdbc.showMenu();
-            
+            returnText = "Pizza modificata con successo!\n" + jdbc.showMenu();
+
         }
         if (act.equals("aggiungere")) {
             DB jdbc = new DB();
@@ -87,7 +88,7 @@ public class FormController {
                 returnText = "<p>Errore nell'interazione con il DB. La pizza potrebbe essere gi&agrave; presente.</p>";
             }
         }
-        if(act.equals("cancellare")){
+        if (act.equals("cancellare")) {
             DB jdbc = new DB();
             if (jdbc.delPizza(id)) {
                 returnText = "<p>Pizza eliminata con successo!</p>\n" + jdbc.showMenu();
@@ -112,17 +113,68 @@ public class FormController {
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @ResponseBody
     public String loadP(@ModelAttribute(value = "pizza") Pizza pizza, @PathVariable Integer id, BindingResult result) {
-        String returnText = "<p>Errore nell'interazione con il DB</p>";    
+        String returnText = "<p>Errore nell'interazione con il DB</p>";
         //if (!result.hasErrors()) {
-            DB jdbc = new DB();            
-            returnText=jdbc.getPizzaData(id);        
+        DB jdbc = new DB();
+        returnText = jdbc.getPizzaData(id);
         //}
         return returnText;
     }
-    
-    @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
+
+    @RequestMapping(value = "/{datiURL}/createOrd", method = RequestMethod.POST)
     @ResponseBody
-    public void createOrder () {
-        
+    public String createOrder(@PathVariable String datiURL, @ModelAttribute(value = "user") User user) {
+        String res = "";
+        StringTokenizer st = new StringTokenizer(datiURL, "&");
+        StringTokenizer st2 = new StringTokenizer(datiURL, "&");
+        String temp = "";
+        String stringVal = "";
+        String stringId = "";
+        String orario = "";
+        String giorno = "";
+        int numberVal = 0;
+        int numberId = 0;
+        int posU = 1;
+        DB jdbc = new DB();
+
+        while (st.hasMoreTokens()) {
+            temp = st.nextToken();
+            posU = temp.indexOf('=');
+            stringId = temp.substring(0, posU);
+            stringVal = temp.substring(posU + 1, temp.length());
+            if (stringId.equals("hour_time")) {
+                orario = stringVal;
+            }
+            if (stringId.equals("dateo")) {
+                giorno = stringVal;
+            }
+        }
+
+        res += orario + " " + giorno;
+
+        while (st2.hasMoreTokens()) {
+            temp = st2.nextToken();
+            posU = temp.indexOf('=');
+
+            if (temp.charAt(0) == 'q') {
+                stringId = temp.substring(1, posU);
+                stringVal = temp.substring(posU + 1, temp.length());
+                numberId = Integer.parseInt(stringId);
+                numberVal = Integer.parseInt(stringVal);
+                res = res + " : " + stringId + " : " + stringVal;
+                if (numberVal > 0) {
+                    jdbc.addOrder(user.getId_u(), numberId, numberVal, giorno, orario);
+                }
+            }
+
+        }
+        return res;
+    }
+    
+    @RequestMapping(value = "/{data}/{ora}/delOrd", method = RequestMethod.POST)
+    @ResponseBody
+    public void delOrder(@PathVariable String data, @PathVariable String ora, @ModelAttribute(value = "user") User user) {
+        DB jdbc = new DB();
+        jdbc.delOrder(user.getId_u(), data, ora);
     }
 }
