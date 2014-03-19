@@ -7,12 +7,12 @@ package com.controller;
 import com.pizze.Pizza;
 import com.service.DB;
 import com.user.User;
+import java.text.ParseException;
 import java.util.StringTokenizer;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -123,7 +123,7 @@ public class FormController {
 
     @RequestMapping(value = "/{datiURL}/createOrd", method = RequestMethod.POST)
     @ResponseBody
-    public String createOrder(@PathVariable String datiURL, @ModelAttribute(value = "user") User user) {
+    public String createOrder(@PathVariable String datiURL, @ModelAttribute(value = "user") User user) throws ParseException {
         String res = "";
         StringTokenizer st = new StringTokenizer(datiURL, "&");
         StringTokenizer st2 = new StringTokenizer(datiURL, "&");
@@ -163,14 +163,15 @@ public class FormController {
                 numberVal = Integer.parseInt(stringVal);
                 res = res + " : " + stringId + " : " + stringVal;
                 if (numberVal > 0) {
-                    jdbc.addOrder(user.getId_u(), numberId, numberVal, giorno, orario);
+                    if(!jdbc.addOrder(user.getId_u(), numberId, numberVal, giorno, orario)){
+                    return "Hai inserito una data non valida.";
+                    }
                 }
             }
-
         }
-        return res;
+        return "Ordine effettuato con successo per il giorno: "+giorno+" alle ore: "+orario;
     }
-    
+
     @RequestMapping(value = "/{data}/{ora}/delOrd", method = RequestMethod.POST)
     @ResponseBody
     public void delOrder(@PathVariable String data, @PathVariable String ora, @ModelAttribute(value = "user") User user) {

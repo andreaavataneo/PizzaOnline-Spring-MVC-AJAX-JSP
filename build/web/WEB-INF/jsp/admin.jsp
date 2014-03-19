@@ -61,6 +61,7 @@
                                 $('.main').replaceWith(response);
                                 $('#formAdm').reload();
                                 $('#top').html("Ecco il contenuto che hai richiesto!");
+                                $('#idSel').reload();
                             },
                             error: function(e) {
                                 alert("Error: " + e);

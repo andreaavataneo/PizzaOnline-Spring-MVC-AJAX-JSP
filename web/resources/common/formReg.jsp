@@ -14,7 +14,7 @@
             <dd><form:input path="surname" id="surname" type="text" value="Cognome" required="on"/></dd>
             <dt><label for=pwd>Password: </label></dt>
             <dd><form:input path="pwd" id="pwd" type="password" value="password" required="on"/></dd>
-            <dt><label for=phone>Nome: </label></dt>
+            <dt><label for=phone>Telefono: </label></dt>
             <dd><form:input path="phone" id="phone" type="text" value="Telefono" required="on"/></dd>
             <dt><label for=address>Indirizzo: </label></dt>
             <dd><form:input path="address" id="addr" type="text" value="Indirizzo" required="on"/></dd>

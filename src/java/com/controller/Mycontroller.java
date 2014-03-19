@@ -61,14 +61,8 @@ public class Mycontroller {
             maw.addObject("menuType", guestMenu);
             maw.addObject("session", user);
             maw.addObject("user", new User()); //creo il bean necessario al form di LogIn e lo aggiungo al ModelAndView            
-        } else if (user.getRole().equals("client")) {
-            maw.addObject("message", "Hai già effettuato il Log In a nome: " + user.getEmail());
-            maw.addObject("menuType", clientMenu);
-            maw.addObject("session", user);
         } else {
-            maw.addObject("message", "Hai già effettuato il Log In a nome: " + user.getEmail());
-            maw.addObject("menuType", adminMenu);
-            maw.addObject("session", user);
+            maw = welcome(user);
         }
         return maw;
     }
@@ -104,7 +98,7 @@ public class Mycontroller {
         maw.addObject("user", user);
         maw.addObject("ClientOrders", jdbc.clientOrders(user.getId_u()));
         if (user.getEmail().equals("ospite")) {
-            maw.addObject("menuType", guestMenu);
+            maw = welcome(user);
         } else if (user.getRole().equals("client")) {
             maw.addObject("menuType", clientMenu);
         } else {

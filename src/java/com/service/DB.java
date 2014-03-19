@@ -6,11 +6,11 @@ package com.service;
 
 import java.sql.*;
 import com.user.User;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -191,7 +191,7 @@ public class DB {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
-            st.executeUpdate("INSERT INTO users(nameU, surname, password, address, phone, admin, email) VALUES ('" + user.getName() + "', '" + user.getSurname() + "', '" + user.getPwd() + "', '" + user.getAddress() + "', '" + user.getPhone() + "',client, '" + user.getEmail() + "')");
+            st.executeUpdate("INSERT INTO users(nameU, surname, password, address, phone, role, email) VALUES ('" + user.getName() + "', '" + user.getSurname() + "', '" + user.getPwd() + "', '" + user.getAddress() + "', '" + user.getPhone() + "', client, '" + user.getEmail() + "')");
             st.close();
             conn.close();
         } catch (SQLException e) {
@@ -256,8 +256,8 @@ public class DB {
             GregorianCalendar gc = new GregorianCalendar();
 
             out = out + "</table>"
-                    + "A che ora ? <input type='time' id='hour_time' name='hour_time' min='"+ gc.get(Calendar.HOUR) + ":" + gc.get(Calendar.MINUTE) +"' />"
-                    + "Quando ? <input type='date' id='dateo' name='dateo' min='"+ gc.get(Calendar.YEAR) + "-" + gc.get(Calendar.MONTH) + "-" + gc.get(Calendar.DAY_OF_MONTH) +"'/>"
+                    + "A che ora ? <input type='time' id='hour_time' name='hour_time' min='" + gc.get(Calendar.HOUR) + ":" + gc.get(Calendar.MINUTE) + "' />"
+                    + "Quando ? <input type='date' id='dateo' name='dateo' min='" + gc.get(Calendar.YEAR) + "-" + gc.get(Calendar.MONTH) + "-" + gc.get(Calendar.DAY_OF_MONTH) + "'/>"
                     + "<input type='submit' class='button' id='Ordina' value='Ordina'/>"
                     + "</fieldset></form>";
 
@@ -477,7 +477,6 @@ public class DB {
      * @param hour_time
      */
     public void confirmOrder(int id_u, String datao, String hour_time) {
-        String out;
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
@@ -492,25 +491,35 @@ public class DB {
         }
     }
 
-    public void addOrder(int id_u, int id_p, int numberOf, String datao, String hour_time) {
-        try {
-            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
-            Connection conn = DriverManager.getConnection(ur, us, pwd);
-            Statement st = conn.createStatement();
-            st.executeUpdate("INSERT INTO orders(id_u, id_p, numberOf, datao, hour_time, shipped, received) "
-                    + "VALUES (" + id_u + ", " + id_p + ", " + numberOf + ", '" + datao + "', '" + hour_time + "', false, false)");
-            st.close();
-            conn.close();
-        } catch (SQLException e) {
+    public boolean addOrder(int id_u, int id_p, int numberOf, String datao, String hour_time) throws ParseException {
+
+        Calendar cal = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        cal.setTime(sdf.parse(datao+" "+hour_time));        
+        if (cal.after(today)) {
+            try {
+                DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+                Connection conn = DriverManager.getConnection(ur, us, pwd);
+                Statement st = conn.createStatement();
+                st.executeUpdate("INSERT INTO orders(id_u, id_p, numberOf, datao, hour_time, shipped, received) "
+                        + "VALUES (" + id_u + ", " + id_p + ", " + numberOf + ", '" + datao + "', '" + hour_time + "', false, false)");
+                st.close();
+                conn.close();
+                return true;
+            } catch (SQLException e) {
+                return false;
+            }
         }
+        return false;
     }
-    
+
     public void delOrder(int id_u, String datao, String hour_time) {
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
-            st.executeUpdate("DELETE FROM orders WHERE id_u="+ id_u + " AND datao='" + datao + "' AND hour_time='" + hour_time + "'");
+            st.executeUpdate("DELETE FROM orders WHERE id_u=" + id_u + " AND datao='" + datao + "' AND hour_time='" + hour_time + "'");
             st.close();
             conn.close();
         } catch (SQLException e) {

@@ -32,7 +32,8 @@
                         data: data,
                         success: function(response) {
                             // we have the response  
-                            $('#info').html(response);
+                            alert(response);
+                            window.location.href("index.htm");
                         },
                         error: function(e) {
                             alert("Error: " + e);
@@ -42,36 +43,49 @@
             }
 
             function validateForm(mail, pwd, name, surname, phone, addr) {
+
+                var i=0;
                 if (name === "") {
                     $('#name_err').show();
-                    return false;
+                    i++;
+                } else {
+                    $('#name_err').hide();
                 }
                 if (phone === "") {
                     $('#phone_err').show();
-                    return false;
+                    i++;
+                } else {
+                    $('#phone_err').hide();
                 }
                 if (surname === "") {
                     $('#surname_err').show();
-                    return false;
+                    i++;
+                } else {
+                    $('#surname_err').hide();                    
                 }
                 if (addr === "") {
                     $('#addr_err').show();
-                    return false;
-                } else if (mail === "") {
+                    i++;
+                }
+                else {
+                    $('#addr_err').hide();
+                }
+                if (mail === "") {
                     $('#email_err').show();
-                    return false;
+                    i++;
+                } else {
+                    $('#email_err').hide();                   
                 }
                 if (pwd === "") {
                     $('#pwd_err').show();
-                    return false;
+                    i++;
                 } else {
-                    $('#email_err').hide();
-                    $('#pwd_err').hide();
-                    $('#name_err').hide();
-                    $('#addr_err').hide();
-                    $('#phone_err').hide();
-                    $('surname_err').hide();
+                    $('#pwd_err').hide();                    
+                }
+                if(i===0){
                     return true;
+                }else{
+                    return false;
                 }
             }
         </script>
@@ -83,7 +97,7 @@
                 <p class="hello">${message}</p>  
             </section>
             <section>
-                 <%@include file="../../resources/common/formReg.jsp" %>
+                <%@include file="../../resources/common/formReg.jsp" %>
                 <p id="info"></p>
             </section>
         </article>

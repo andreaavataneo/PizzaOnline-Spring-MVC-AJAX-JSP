@@ -17,15 +17,15 @@
                 $('#newOrder').submit(function(e) {
                     e.preventDefault();
                     var variabili = $('#newOrder').serialize();
-                    alert(variabili);
+                    //alert(variabili);
+
                     $.ajax({
                         type: 'POST',
                         url: variabili + "/createOrd.htm",
                         success: function(response) {
-                            // we have the response                             
-                            //$('#info').html(response);
-                            $('#ordiniC').reload();
-
+                            // we have the response          
+                            alert(response);
+                            location.reload();
                         },
                         error: function(e) {
                             alert('Error: ' + e);
@@ -33,19 +33,16 @@
                     });
                 });
 
-
-
                 $('.orderM').click(function(e) {
                     e.preventDefault();
-
                     var day = $(this).find('#datao').val();
                     var time = $(this).find('#hour_time').val();
-                    //alert(day + " " + time);
 
                     $.ajax({
                         type: 'POST',
                         url: day + "/" + time + "/delOrd.htm",
-                        success: function(response) {
+                        success: function() {
+                            // we have the response
                             alert("Ordine eliminato con successo!");
                             location.reload();
                         },
@@ -53,13 +50,11 @@
                             alert('Error: ' + e);
                         }
                     });
-
                 });
             });
         </script>
     </head>
     <body>
-
         <header>
             <%@include file="../../resources/common/header.html" %>           
         </header>    
