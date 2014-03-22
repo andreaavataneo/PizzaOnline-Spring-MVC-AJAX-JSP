@@ -20,17 +20,17 @@ public class User {
     private String address;
     private String email;
     private String pwd;
-    private String role;
+    private String typeRole;
 
    
-    public User(String name, String surname, String address, String email, String pwd, String phone, String role) {
+    public User(String name, String surname, String address, String email, String pwd, String phone, String typeRole) {
         this.name = name;
         this.surname = surname;
         this.address = address;
         this.email = email;
         this.pwd = pwd;
         this.phone = phone;
-        this.role = role;
+        this.typeRole = typeRole;
     }
 
     /**
@@ -39,7 +39,7 @@ public class User {
      */
     public User() {
        this.email="ospite";
-       this.role="guest";
+       this.typeRole="guest";
     }
         
     public int getId_u() {
@@ -98,12 +98,12 @@ public class User {
         this.pwd = pwd;
     }
 
-     public String getRole() {
-        return role;
+     public String getTypeRole() {
+        return typeRole;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setTypeRole(String typeRole) {
+        this.typeRole = typeRole;
     }
     
 }

@@ -45,7 +45,7 @@ public class Mycontroller {
         maw.addObject("session", user);        
         if (user.getEmail().equals("ospite")) {
             maw.addObject("menuType", guestMenu);
-        } else if (user.getRole().equals("client")) {
+        } else if (user.getTypeRole().equals("client")) {
             maw.addObject("menuType", clientMenu);
         } else {
             maw.addObject("menuType", adminMenu);
@@ -75,7 +75,7 @@ public class Mycontroller {
         maw.addObject("user", new User());
         if (user.getEmail().equals("ospite")) {
             maw.addObject("menuType", guestMenu);
-        } else if (user.getRole().equals("client")) {
+        } else if (user.getTypeRole().equals("client")) {
             maw.addObject("menuType", clientMenu);
         } else {
             maw.addObject("menuType", adminMenu);
@@ -99,7 +99,7 @@ public class Mycontroller {
         maw.addObject("ClientOrders", jdbc.clientOrders(user.getId_u()));
         if (user.getEmail().equals("ospite")) {
             maw = welcome(user);
-        } else if (user.getRole().equals("client")) {
+        } else if (user.getTypeRole().equals("client")) {
             maw.addObject("menuType", clientMenu);
         } else {
             maw.addObject("menuType", adminMenu);
@@ -116,7 +116,7 @@ public class Mycontroller {
         maw.addObject("helloMessage", "Area riservata agli amministratori, aggiunta/modifica/rimozione pizze");
         if (user.getEmail().equals("ospite")) {
             maw.addObject("menuType", guestMenu);
-        } else if (user.getRole().equals("client")) {
+        } else if (user.getTypeRole().equals("client")) {
             maw.addObject("menuType", clientMenu);
         } else {
             maw.addObject("menuType", adminMenu);

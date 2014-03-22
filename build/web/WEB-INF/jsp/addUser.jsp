@@ -33,7 +33,7 @@
                         success: function(response) {
                             // we have the response  
                             alert(response);
-                            window.location.href("index.htm");
+                            window.location.href = "index.htm";
                         },
                         error: function(e) {
                             alert("Error: " + e);

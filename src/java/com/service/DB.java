@@ -172,7 +172,7 @@ public class DB {
                 user.setSurname(rs.getString("SURNAME"));
                 user.setAddress(rs.getString("ADDRESS"));
                 user.setPhone(rs.getString("PHONE"));
-                user.setRole(rs.getString("ROLE"));
+                user.setTypeRole(rs.getString("TYPEROLE"));
             } else {
                 out = false;
             }
@@ -191,7 +191,8 @@ public class DB {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
-            st.executeUpdate("INSERT INTO users(nameU, surname, password, address, phone, role, email) VALUES ('" + user.getName() + "', '" + user.getSurname() + "', '" + user.getPwd() + "', '" + user.getAddress() + "', '" + user.getPhone() + "', client, '" + user.getEmail() + "')");
+            st.executeUpdate("INSERT INTO users(nameU, surname, password, address, phone, typeRole, email) VALUES ('" + user.getName() + "', '" + user.getSurname() + "', '" + user.getPwd() + "', '" + user.getAddress() + "', '" + user.getPhone() + "', 'client', '" + user.getEmail() + "')");
+            user.setTypeRole("client");
             st.close();
             conn.close();
         } catch (SQLException e) {

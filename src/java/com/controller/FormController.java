@@ -36,7 +36,7 @@ public class FormController {
         } else if (jdbc.logger(user)) {
             out = "Hai effettuato l'accesso con successo! " + user.getEmail(); //successo 
 
-            if (user.getRole().equals("admin")) {
+            if (user.getTypeRole().equals("admin")) {
                 out = "admin";
             }
         } else {
