@@ -33,7 +33,7 @@
                     });
                 });
 
-                $('.orderM').click(function(e) {
+                $('.orderDel').click(function(e) {
                     e.preventDefault();
                     var day = $(this).find('#datao').val();
                     var time = $(this).find('#hour_time').val();
@@ -51,6 +51,26 @@
                         }
                     });
                 });
+                
+                $('.orderCon').click(function(e) {
+                    e.preventDefault();
+                    var day = $(this).find('#datao').val();
+                    var time = $(this).find('#hour_time').val();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: day + "/" + time + "/conOrd.htm",
+                        success: function() {
+                            // we have the response
+                            alert("Consegna effettuata con successo!");
+                            location.reload();
+                        },
+                        error: function(e) {
+                            alert('Error: ' + e);
+                        }
+                    });
+                });
+                
             });
         </script>
     </head>
@@ -68,8 +88,11 @@
                 ${order}
                 <p id="info"></p>
             </section>
-            <section id='ordiniC'>
-                ${ClientOrders}
+            <section id='todayOrd'>
+                ${todayClientOrders}
+            </section>
+            <section id='nextOrd'>
+                ${nextClientOrders}
             </section>
         </article>
         <nav id="menu"> 

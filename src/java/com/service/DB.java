@@ -341,48 +341,43 @@ public class DB {
      *
      */
     //Aggiungere controllo per mettere dinamicamente elimina ordine o conferma ricezione !!!
-    public String clientOrders(int id_u) {
+    public String nextClientOrders(int id_u) {
         String result = "";
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
-            //ResultSet rs = st.executeQuery("select * from pizzas where 1!=1");
             ResultSet rs = st.executeQuery("select (select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP,"
                     + "numberOf, datao, hour_time, shipped, received, id_o  from orders "
-                    + "where shipped=false AND id_u=" + id_u + " AND datao >= current_date order by datao,hour_time");
-
-            //prove sul resultset
-            /*result += "valore di id_u: " + id_u + "<br>";
-             result += "numero della riga a query eseguita senza next:" + rs.getRow() + " <br>";
-             rs.next();
-             result += rs.getString("nameP") + " " + rs.getString("numberOf") + " " + rs.getString("datao") + "<br>";
-
-             result += "numero della riga a query eseguita dopo next:" + rs.getRow() + " <br>";*/
-
-            /*rs.last();
-             if (rs.getRow() == 0) {
-             return "Al momento non ci sono ordini in sospeso";
-             }
-             rs.first();*/
-
+                    + "where id_u=" + id_u + " AND datao > current_date AND received=false order by datao,hour_time");
 
             rs.next();
             if (rs.getRow() != 1) {
                 rs.close();
                 st.close();
                 conn.close();
-                return "<section class='ordini'>Al momento non ci sono ordini in sospeso</section>";
+                return "<section class='ordini'>Nessun ordine futuro ...</section>";
             }
             String dataOld = rs.getString("datao");
             String hourOld = rs.getString("hour_time");
             int c = 1;
-            result = "<section class='ordini'>"
-                    + "<form class='orderM' name='ord" + c + "' id='ord" + c + "' >"
-                    + "<fieldset>"
-                    + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>"
-                    + "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>"
-                    + "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
+            result += "<section class='ordini'>";
+            if (rs.getBoolean("shipped") == false) {
+                result += "<form class='orderDel' name='ord" + c + "' id='ord" + c + "' >";
+            } else {
+                result += "<form class='orderCon' name='ord" + c + "' id='ord" + c + "' >";
+            }
+
+            result += "<fieldset>"
+                    + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+
+            if (rs.getBoolean("shipped") == false) {
+                result += "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>";
+            } else {
+                result += "<input class='button' id='conferma' type='submit' value='Conferma Consegna'/>";
+            }
+
+            result += "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
                     + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
                     + "<table><tr><td>Pizza</td><td>Quantit&agrave;</td></tr>"
                     + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
@@ -390,13 +385,24 @@ public class DB {
 
                 if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time")))) {
                     c++;
-                    result = result + "</table></fieldset></form></section>"
-                            + "<section class='ordini'>"
-                            + "<form class='orderM' name='ord" + c + "' id='ord" + c + "'  >"
-                            + "<fieldset>"
-                            + "<legend>Ordine per il: " + rs.getString("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>"
-                            + "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>"
-                            + "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
+                    result += "</table></fieldset></form></section>";
+
+                    result += "<section class='ordini'>";
+                    if (rs.getBoolean("shipped") == false) {
+                        result += "<form class='orderDel' name='ord" + c + "' id='ord" + c + "' >";
+                    } else {
+                        result += "<form class='orderCon' name='ord" + c + "' id='ord" + c + "' >";
+                    }
+
+                    result += "<fieldset>"
+                            + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+
+                    if (rs.getBoolean("shipped") == false) {
+                        result += "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>";
+                    } else {
+                        result += "<input class='button' id='conferma' type='submit' value='Conferma Consegna'/>";
+                    }
+                    result += "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
                             + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
                             + "<table><tr><td>Pizza</td><td>Quantit&agrave;</td></tr>";
                 }
@@ -414,6 +420,86 @@ public class DB {
         }
         return result;
 
+    }
+
+    public String todayClientOrders(int id_u) {
+        String result = "";
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("select (select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP,"
+                    + "numberOf, datao, hour_time, shipped, received, id_o  from orders "
+                    + "where id_u=" + id_u + " AND datao = current_date AND received=false order by datao,hour_time");
+
+            rs.next();
+            if (rs.getRow() != 1) {
+                rs.close();
+                st.close();
+                conn.close();
+                return "<section class='ordini'>Nessun ordine per oggi ...</section>";
+            }
+            String dataOld = rs.getString("datao");
+            String hourOld = rs.getString("hour_time");
+            int c = 1;
+            result += "<section class='ordini'>";
+            if (rs.getBoolean("shipped") == false) {
+                result += "<form class='orderDel' name='ord" + c + "' id='ord" + c + "' >";
+            } else {
+                result += "<form class='orderCon' name='ord" + c + "' id='ord" + c + "' >";
+            }
+
+            result += "<fieldset>"
+                    + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+
+            if (rs.getBoolean("shipped") == false) {
+                result += "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>";
+            } else {
+                result += "<input class='button' id='conferma' type='submit' value='Conferma Consegna'/>";
+            }
+
+            result += "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
+                    + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
+                    + "<table><tr><td>Pizza</td><td>Quantit&agrave;</td></tr>"
+                    + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+            while (rs.next()) {
+
+                if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time")))) {
+                    c++;
+                    result += "</table></fieldset></form></section>";
+
+                    result += "<section class='ordini'>";
+                    if (rs.getBoolean("shipped") == false) {
+                        result += "<form class='orderDel' name='ord" + c + "' id='ord" + c + "' >";
+                    } else {
+                        result += "<form class='orderCon' name='ord" + c + "' id='ord" + c + "' >";
+                    }
+
+                    result += "<fieldset>"
+                            + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+
+                    if (rs.getBoolean("shipped") == false) {
+                        result += "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>";
+                    } else {
+                        result += "<input class='button' id='conferma' type='submit' value='Conferma Consegna'/>";
+                    }
+                    result += "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
+                            + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
+                            + "<table><tr><td>Pizza</td><td>Quantit&agrave;</td></tr>";
+                }
+
+                result = result + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+                dataOld = rs.getString("datao");
+                hourOld = rs.getString("hour_time");
+            }
+            result = result + "</table></fieldset></form></section>";
+            rs.close();
+            st.close();
+            conn.close();
+        } catch (SQLException e) {
+            result += e.getMessage();
+        }
+        return result;
     }
 
     /**
@@ -483,7 +569,7 @@ public class DB {
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             st.executeUpdate("UPDATE orders SET received=true where "
-                    + "id_u='" + id_u + "' AND "
+                    + "id_u=" + id_u + " AND "
                     + "datao='" + datao + "' AND "
                     + "hour_time='" + hour_time + "'");
             st.close();
@@ -497,7 +583,7 @@ public class DB {
         Calendar cal = Calendar.getInstance();
         Calendar today = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        cal.setTime(sdf.parse(datao+" "+hour_time));        
+        cal.setTime(sdf.parse(datao + " " + hour_time));
         if (cal.after(today)) {
             try {
                 DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());

@@ -169,7 +169,7 @@ public class FormController {
                 }
             }
         }
-        return "Ordine effettuato con successo per il giorno: "+giorno+" alle ore: "+orario;
+        return "Ordine effettuato con successo per il giorno: \n"+giorno+" alle ore: "+orario;
     }
 
     @RequestMapping(value = "/{data}/{ora}/delOrd", method = RequestMethod.POST)
@@ -177,5 +177,12 @@ public class FormController {
     public void delOrder(@PathVariable String data, @PathVariable String ora, @ModelAttribute(value = "user") User user) {
         DB jdbc = new DB();
         jdbc.delOrder(user.getId_u(), data, ora);
+    }
+    
+    @RequestMapping(value = "/{data}/{ora}/conOrd", method = RequestMethod.POST)
+    @ResponseBody
+    public void conOrder(@PathVariable String data, @PathVariable String ora, @ModelAttribute(value = "user") User user) {
+        DB jdbc = new DB();
+        jdbc.confirmOrder(user.getId_u(), data, ora);
     }
 }

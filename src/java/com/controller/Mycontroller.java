@@ -96,7 +96,8 @@ public class Mycontroller {
         maw.addObject("order", jdbc.menuOrder());
         maw.addObject("message", "Pagina di ordinazione");
         maw.addObject("user", user);
-        maw.addObject("ClientOrders", jdbc.clientOrders(user.getId_u()));
+        maw.addObject("todayClientOrders", jdbc.todayClientOrders(user.getId_u()));
+        maw.addObject("nextClientOrders", jdbc.nextClientOrders(user.getId_u()));
         if (user.getEmail().equals("ospite")) {
             maw = welcome(user);
         } else if (user.getTypeRole().equals("client")) {
