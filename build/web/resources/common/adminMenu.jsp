@@ -6,5 +6,6 @@
 <a href="index.htm">Home</a>    
 <a href="ClientArea.htm">Area Clienti</a>
 <a href="admin.htm">Area Admin</a>
+<a href="orders.htm">Area Ordini</a>
 <a href="LogOut.htm">Log Out</a>
 

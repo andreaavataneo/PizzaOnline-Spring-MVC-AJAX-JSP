@@ -185,4 +185,11 @@ public class FormController {
         DB jdbc = new DB();
         jdbc.confirmOrder(user.getId_u(), data, ora);
     }
+    
+    @RequestMapping(value = "/{data}/{ora}/orderSend", method = RequestMethod.POST)
+    @ResponseBody
+    public void orderSend(@PathVariable String data, @PathVariable String ora, @ModelAttribute(value = "user") User user) {
+        DB jdbc = new DB();
+        jdbc.sendOrder(data, ora);
+    }
 }

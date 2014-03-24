@@ -541,13 +541,12 @@ public class DB {
      * @param datao
      * @param hour_time
      */
-    public void sendOrder(int id_u, String datao, String hour_time) {
+    public void sendOrder(String datao, String hour_time) {
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             st.executeUpdate("UPDATE orders SET shipped=true where "
-                    + "id_u=" + id_u + " AND "
                     + "datao='" + datao + "' AND "
                     + "hour_time='" + hour_time + "'");
             st.close();
@@ -611,5 +610,173 @@ public class DB {
             conn.close();
         } catch (SQLException e) {
         }
+    }
+
+    public String todayTask() {
+        String result = "";
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("select (select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP,"
+                    + "numberOf, datao, hour_time, shipped, received, id_o, nameu, surname, address, phone from orders, users "
+                    + "where users.id_u=orders.id_u AND datao = current_date AND received=false order by datao,hour_time");
+
+            rs.next();
+            if (rs.getRow() != 1) {
+                rs.close();
+                st.close();
+                conn.close();
+                return "<section class='ordini'>Nessun ordine per oggi ...</section>";
+            }
+            String dataOld = rs.getString("datao");
+            String hourOld = rs.getString("hour_time");
+            int c = 1;
+            result += "<section class='ordini'>";
+            if (rs.getBoolean("shipped") == false) {
+                result += "<form class='orderSend' name='ord" + c + "' id='ord" + c + "' >";
+            } else {
+                result += "<form class='orderShipped' name='ord" + c + "' id='ord" + c + "' >";
+            }
+
+            result += "<fieldset>"
+                    + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+
+            if (rs.getBoolean("shipped") == false) {
+                result += "<input class='button' id='spedisci' type='submit' value='Spedisci Ordine'/>";
+            } else {
+                result += "<input class='button' id='aspetta' type='button' value='Aspetta Consegna'/>";
+            }
+
+            result += "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
+                    + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
+                    + "<table><tr><td>" + rs.getString("nameu") + "</td><td>" + rs.getString("surname") + "</td></tr>"
+                    + "<tr><td>" + rs.getString("address") + "</td><td>" + rs.getString("phone") + "</td></tr>"
+                    + "<tr><th>Pizza</th><th>Quantit&agrave;</th></tr>"
+                    + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+            while (rs.next()) {
+
+                if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time")))) {
+                    c++;
+                    result += "</table></fieldset></form></section>";
+
+                    result += "<section class='ordini'>";
+                    if (rs.getBoolean("shipped") == false) {
+                        result += "<form class='orderSend' name='ord" + c + "' id='ord" + c + "' >";
+                    } else {
+                        result += "<form class='orderShipped' name='ord" + c + "' id='ord" + c + "' >";
+                    }
+
+                    result += "<fieldset>"
+                            + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+
+                    if (rs.getBoolean("shipped") == false) {
+                        result += "<input class='button' id='spedisci' type='submit' value='Spedisci Ordine'/>";
+                    } else {
+                        result += "<input class='button' id='aspetta' type='button' value='Attendi Consegna'/>";
+                    }
+                    result += "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
+                            + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
+                            + "<table><tr><td>" + rs.getString("nameu") + "</td><td>" + rs.getString("surname") + "</td></tr>"
+                            + "<tr><td>" + rs.getString("address") + "</td><td>" + rs.getString("phone") + "</td></tr>"
+                            + "<tr><th>Pizza</th><th>Quantit&agrave;</th></tr>";
+                }
+
+                result = result + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+                dataOld = rs.getString("datao");
+                hourOld = rs.getString("hour_time");
+            }
+            result = result + "</table></fieldset></form></section>";
+            rs.close();
+            st.close();
+            conn.close();
+        } catch (SQLException e) {
+            result += e.getMessage();
+        }
+        return result;
+    }
+
+    public String nextTask() {
+        String result = "";
+        try {
+            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
+            Connection conn = DriverManager.getConnection(ur, us, pwd);
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery("select (select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP,"
+                    + "numberOf, datao, hour_time, shipped, received, id_o, nameu, surname, address, phone from orders, users "
+                    + "where users.id_u=orders.id_u AND datao > current_date AND received=false order by datao,hour_time");
+
+            rs.next();
+            if (rs.getRow() != 1) {
+                rs.close();
+                st.close();
+                conn.close();
+                return "<section class='ordini'>Nessun ordine per oggi ...</section>";
+            }
+            String dataOld = rs.getString("datao");
+            String hourOld = rs.getString("hour_time");
+            int c = 1;
+            result += "<section class='ordini'>";
+            if (rs.getBoolean("shipped") == false) {
+                result += "<form class='orderSend' name='ord" + c + "' id='ord" + c + "' >";
+            } else {
+                result += "<form class='orderShipped' name='ord" + c + "' id='ord" + c + "' >";
+            }
+
+            result += "<fieldset>"
+                    + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+
+            if (rs.getBoolean("shipped") == false) {
+                result += "<input class='button' id='spedisci' type='submit' value='Spedisci Ordine'/>";
+            } else {
+                result += "<input class='button' id='aspetta' type='button' value='Aspetta Consegna'/>";
+            }
+
+            result += "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
+                    + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
+                    + "<table><tr><td>" + rs.getString("nameu") + "</td><td>" + rs.getString("surname") + "</td></tr>"
+                    + "<tr><td>" + rs.getString("address") + "</td><td>" + rs.getString("phone") + "</td></tr>"
+                    + "<tr><th>Pizza</th><th>Quantit&agrave;</th></tr>"
+                    + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+            while (rs.next()) {
+
+                if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time")))) {
+                    c++;
+                    result += "</table></fieldset></form></section>";
+
+                    result += "<section class='ordini'>";
+                    if (rs.getBoolean("shipped") == false) {
+                        result += "<form class='orderSend' name='ord" + c + "' id='ord" + c + "' >";
+                    } else {
+                        result += "<form class='orderShipped' name='ord" + c + "' id='ord" + c + "' >";
+                    }
+
+                    result += "<fieldset>"
+                            + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+
+                    if (rs.getBoolean("shipped") == false) {
+                        result += "<input class='button' id='spedisci' type='submit' value='Spedisci Ordine'/>";
+                    } else {
+                        result += "<input class='button' id='aspetta' type='button' value='Attendi Consegna'/>";
+                    }
+                    result += "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
+                            + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
+                            + "<table><tr><td>" + rs.getString("nameu") + "</td><td>" + rs.getString("surname") + "</td></tr>"
+                            + "<tr><td>" + rs.getString("address") + "</td><td>" + rs.getString("phone") + "</td></tr>"
+                            + "<tr><th>Pizza</th><th>Quantit&agrave;</th></tr>";
+                }
+
+                result = result + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+                dataOld = rs.getString("datao");
+                hourOld = rs.getString("hour_time");
+            }
+            result = result + "</table></fieldset></form></section>";
+            rs.close();
+            st.close();
+            conn.close();
+        } catch (SQLException e) {
+            result += e.getMessage();
+        }
+        return result;
     }
 }

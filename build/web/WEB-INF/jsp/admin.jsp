@@ -58,10 +58,11 @@
                             data: data,
                             success: function(response) {
                                 // we have the response
-                                $('.main').replaceWith(response);
-                                $('#formAdm').reload();
+                                
                                 $('#top').html("Ecco il contenuto che hai richiesto!");
-                                $('#idSel').reload();
+                                location.reload();
+                                $('.main').replaceWith(response);
+                                
                             },
                             error: function(e) {
                                 alert("Error: " + e);

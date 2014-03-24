@@ -23,9 +23,11 @@ import org.springframework.web.servlet.ModelAndView;
 @SessionAttributes("user")
 public class Mycontroller {
 
-    private String clientMenu = "<a href=\"index.htm\">Home</a>\n<a href=\"ClientArea.htm\">Area Clienti</a>\n<a href=\"LogOut.htm\">Log Out</a>";
     private String guestMenu = "<a href=\"index.htm\">Home</a>\n<a href=\"LogIn.htm\">Log In</a>";
-    private String adminMenu = "<a href=\"index.htm\">Home</a>\n<a href=\"ClientArea.htm\">Area Clienti</a>\n<a href=\"admin.htm\">Area Admin</a>\n"
+    private String clientMenu = "<a href=\"index.htm\">Home</a>\n<a href=\"ClientArea.htm\">"
+            + "Area Clienti</a>\n<a href=\"LogOut.htm\">Log Out</a>";
+    private String adminMenu = "<a href=\"index.htm\">Home</a>\n<a href=\"ClientArea.htm\">Area Clienti</a>\n"
+            + "<a href=\"admin.htm\">Area Admin</a>\n<a href=\"orders.htm\">Area Ordini</a>\n"
             + "<a href=\"LogOut.htm\">Log Out</a>";
 
     @ModelAttribute("user")
@@ -42,7 +44,7 @@ public class Mycontroller {
                 + " un'ordinazione dovrai entrare nell'area clienti. Se non sei cliente, Registrati!";
         maw.addObject("helloMessage", s);
         maw.addObject("menu", menu);
-        maw.addObject("session", user);        
+        maw.addObject("session", user);
         if (user.getEmail().equals("ospite")) {
             maw.addObject("menuType", guestMenu);
         } else if (user.getTypeRole().equals("client")) {
@@ -70,7 +72,7 @@ public class Mycontroller {
     @RequestMapping(value = "/addUser", method = RequestMethod.GET)
     public ModelAndView addUser(@ModelAttribute(value = "user") User user, @ModelAttribute(value = "s_user") User s_user) {
         ModelAndView maw = new ModelAndView();
-        String s = "Comila tutti i campi per poter effettuare la registrazione al nostro sito.";
+        String s = "Compila tutti i campi per poter effettuare la registrazione al nostro sito.";
         maw.addObject("session", user);
         maw.addObject("user", new User());
         if (user.getEmail().equals("ospite")) {
@@ -92,35 +94,54 @@ public class Mycontroller {
     @RequestMapping(value = "/ClientArea", method = RequestMethod.GET)
     public ModelAndView clientArea(@ModelAttribute(value = "user") User user) {
         ModelAndView maw = new ModelAndView("ClientArea");
-        DB jdbc = new DB();
-        maw.addObject("order", jdbc.menuOrder());
-        maw.addObject("message", "Pagina di ordinazione");
-        maw.addObject("user", user);
-        maw.addObject("todayClientOrders", jdbc.todayClientOrders(user.getId_u()));
-        maw.addObject("nextClientOrders", jdbc.nextClientOrders(user.getId_u()));
         if (user.getEmail().equals("ospite")) {
             maw = welcome(user);
-        } else if (user.getTypeRole().equals("client")) {
-            maw.addObject("menuType", clientMenu);
         } else {
-            maw.addObject("menuType", adminMenu);
+            DB jdbc = new DB();
+            maw.addObject("order", jdbc.menuOrder());
+            maw.addObject("message", "Pagina di ordinazione");
+            maw.addObject("user", user);
+            maw.addObject("todayClientOrders", jdbc.todayClientOrders(user.getId_u()));
+            maw.addObject("nextClientOrders", jdbc.nextClientOrders(user.getId_u()));
+            if (user.getTypeRole().equals("client")) {
+                maw.addObject("menuType", clientMenu);
+            } else {
+                maw.addObject("menuType", adminMenu);
+            }
         }
         return maw;
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
-    public ModelAndView adminArea(@ModelAttribute(value = "user") User user, @ModelAttribute(value="pizza") Pizza pizza) {
+    public ModelAndView adminArea(@ModelAttribute(value = "user") User user, @ModelAttribute(value = "pizza") Pizza pizza) {
         ModelAndView maw = new ModelAndView("admin");
-        DB jdbc = new DB();
-        maw.addObject("allP",jdbc.listPizzas());
-        maw.addObject("pizza", new Pizza());
-        maw.addObject("helloMessage", "Area riservata agli amministratori, aggiunta/modifica/rimozione pizze");
-        if (user.getEmail().equals("ospite")) {
-            maw.addObject("menuType", guestMenu);
-        } else if (user.getTypeRole().equals("client")) {
-            maw.addObject("menuType", clientMenu);
-        } else {
+        if (user.getTypeRole().equals("admin")) {
+            DB jdbc = new DB();
+            maw.addObject("allP", jdbc.listPizzas());
+            maw.addObject("pizza", new Pizza());
+            maw.addObject("helloMessage", "Area riservata agli amministratori, aggiunta/modifica/rimozione pizze");
             maw.addObject("menuType", adminMenu);
+        } else {
+            maw = welcome(user);
+        }
+        return maw;
+    }
+
+    @RequestMapping(value = "/orders", method = RequestMethod.GET)
+    public ModelAndView orders(@ModelAttribute(value = "user") User user) {
+        ModelAndView maw = new ModelAndView("orders");
+        if (user.getTypeRole().equals("admin")) {
+            DB jdbc = new DB();
+            maw.addObject("todayTask", jdbc.todayTask());
+            maw.addObject("nextTask", jdbc.nextTask());
+            maw.addObject("menuType", adminMenu);
+            /*DB jdbc = new DB();
+             maw.addObject("allP", jdbc.listPizzas());
+             maw.addObject("pizza", new Pizza());
+             maw.addObject("helloMessage", "Area riservata agli amministratori, aggiunta/modifica/rimozione pizze");
+             */
+        } else {
+            maw = welcome(user);
         }
         return maw;
     }
