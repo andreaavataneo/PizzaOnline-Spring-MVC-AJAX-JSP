@@ -257,7 +257,7 @@ public class DB {
             GregorianCalendar gc = new GregorianCalendar();
 
             out = out + "</table>"
-                    + "A che ora ? <input type='time' id='hour_time' name='hour_time' min='" + gc.get(Calendar.HOUR) + ":" + gc.get(Calendar.MINUTE) + "' />"
+                    + "A che ora ? <input type='time' id='hour_time' name='hour_time' min='19:00' max='23:00'/>"
                     + "Quando ? <input type='date' id='dateo' name='dateo' min='" + gc.get(Calendar.YEAR) + "-" + gc.get(Calendar.MONTH) + "-" + gc.get(Calendar.DAY_OF_MONTH) + "'/>"
                     + "<input type='submit' class='button' id='Ordina' value='Ordina'/>"
                     + "</fieldset></form>";

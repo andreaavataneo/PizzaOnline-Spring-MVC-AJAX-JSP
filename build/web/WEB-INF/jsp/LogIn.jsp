@@ -48,17 +48,24 @@
             }
 
             function validateForm(mail, pwd) {
+            
+               var i=0;                
                 if (mail === "") {
                     $('#mail_err').show();
-                    return false;
+                    i++;
+                } else {
+                    $('#mail_err').hide();                   
                 }
                 if (pwd === "") {
                     $('#pwd_err').show();
-                    return false;
+                    i++;
                 } else {
-                    $('#mail_err').hide();
-                    $('#pwd_err').hide();
+                    $('#pwd_err').hide();                    
+                }
+                if(i===0){
                     return true;
+                }else{
+                    return false;
                 }
             }
         </script>       
