@@ -13,16 +13,12 @@
         <%@include file="../../resources/common/head.jsp" %>
     </head>
     <body>
+        <div id="finestra" title="Conferma?"></div>
         <script type="text/javascript">
 
             $(document).ready(function() {
-                
-                $('#finestra').dialog();
-
                 $('#idSel').click(function() {
-
                     var id = this.value;
-
                     $.ajax({
                         type: "POST",
                         url: id + ".htm",
@@ -47,47 +43,35 @@
                     var descr = $('#description').val();
                     var price = $('#price').val();
                     var id_p = $('#idSel').val();
-                    var conf = window.confirm("Sei sicuro di volere "+this.id+" la pizza?");
-
-                    if (validateForm(name, descr, price)&&conf===true) {                     
-
-                        var data = $('#formAddP').serialize();
-                        var act = this.id;
-
-                        $.ajax({
-                            type: "POST",
-                            url: act + "/" + id_p + "/modify.htm",
-                            data: data,
-                            success: function(response) {
-                                // we have the response
-                                
-                                $('#top').html("Ecco il contenuto che hai richiesto!");
-                                location.reload();
-                                $('.main').replaceWith(response);
-                                
+                    var act = this.id;
+                    $('#finestra').html("Sei sicuro di volere " + this.id + " la pizza?");
+                    $('#finestra').dialog({
+                        modal: true,
+                        buttons: {
+                            "Conferma": function() {
+                                if (validateForm(name, descr, price)) {
+                                    var data = $('#formAddP').serialize();
+                                    $.ajax({
+                                        type: "POST",
+                                        url: act + "/" + id_p + "/modify.htm",
+                                        data: data,
+                                        success: function(response) {                                         
+                                            location.reload();
+                                        },
+                                        error: function(e) {
+                                            alert("Error: " + e);
+                                        }
+                                    });
+                                }
+                                $(this).dialog("close");
                             },
-                            error: function(e) {
-                                alert("Error: " + e);
+                            "Annulla": function() {
+                                $(this).dialog("close");
                             }
-                        });
-                    }
-                });
-
-                $('#viewO').click(function() {
-
-                    $.ajax({
-                        type: "POST",
-                        url: "viewO.htm",
-                        success: function(response) {
-                            // we have the response
-                            $('.main').replaceWith(response);
-                            $('#top').html("Ecco il contenuto che hai richiesto!");
-                        },
-                        error: function(e) {
-                            alert("Error: " + e);
                         }
                     });
                 });
+
             });
 
             function validateForm(name, descr, price) {
@@ -114,13 +98,9 @@
             <%@include file="../../resources/common/header.html" %>           
         </header>    
         <article>
-            
-            <div id="finestra" title="Titolo della finestra">
-        <p>Contenuto della finestra</p>
-    </div>
 
-            
-                <%@include file="../../resources/common/formAdmin.jsp" %>
+
+            <%@include file="../../resources/common/formAdmin.jsp" %>
 
             <section>
                 <p hidden="true" class="error" id="name_err">Non hai inserito il nome della pizza!</p>

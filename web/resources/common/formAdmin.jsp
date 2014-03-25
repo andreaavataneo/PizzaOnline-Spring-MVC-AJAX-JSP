@@ -24,9 +24,5 @@
             <input class="button" id="cancellare" type="button" value="Cancella pizza!"/>     
         </fieldset>
     </form:form>
-    <form:form commandName="pizza" id="Orders">
-        <fieldset>
-            <input class="button" id="viewO" type="button" value="Mostra ordinazioni."/>
-        </fieldset>
-    </form:form>
+    
 </section>

@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,6 +25,19 @@ public class DB {
     private static final String us = "app";
     private static final String pwd = "app";
 
+    
+    public String convData(String data) {
+        String conv="";
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            cal.setTime(sdf.parse(data));
+        } catch (ParseException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        conv = cal.get(cal.DAY_OF_MONTH) + "-" + cal.get(cal.MONTH) + "-" + cal.get(cal.YEAR);
+        return conv;
+    }
     /**
      * Restituisce una tabella chiamata 'pizzalist' con le pizze appunto
      *
@@ -68,7 +83,7 @@ public class DB {
             conn.close();
         } catch (SQLException e) {
         }
-        allP.put(0, "Nuova Pizza");
+        allP.put(0, "- Nuova Pizza -");
         return allP;
     }
 
@@ -291,7 +306,7 @@ public class DB {
             out = "<table class=\"main\" id=\"orderlist\"><tr><td>Cliente</td><td>Destinazione</td><td>Pizza</td><td>Quante?</td><td>Data</td><td>Fascia Oraria</td><td>In viaggio?</td><td>Arrivata?</td></tr>";
             while (rs.next()) {
 
-                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + rs.getString("datao") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
+                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + convData(rs.getString("datao")) + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
             }
             out = out + "</table>";
             st.close();
@@ -323,7 +338,7 @@ public class DB {
             out = "<table id=\"orderlist\"><tr><td>Cliente</td><td>Destinazione</td><td>Pizza</td><td>Quante?</td><td>Data</td><td>Fascia Oraria</td><td>In viaggio?</td><td>Arrivata?</td></tr>";
             while (rs.next()) {
 
-                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + rs.getString("datao") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
+                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + convData(rs.getString("datao")) + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
             }
             out = out + "</table>";
             st.close();
@@ -369,7 +384,7 @@ public class DB {
             }
 
             result += "<fieldset>"
-                    + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+                    + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
 
             if (rs.getBoolean("shipped") == false) {
                 result += "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>";
@@ -395,7 +410,7 @@ public class DB {
                     }
 
                     result += "<fieldset>"
-                            + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+                            + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
 
                     if (rs.getBoolean("shipped") == false) {
                         result += "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>";
@@ -450,7 +465,7 @@ public class DB {
             }
 
             result += "<fieldset>"
-                    + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+                    + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
 
             if (rs.getBoolean("shipped") == false) {
                 result += "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>";
@@ -476,7 +491,7 @@ public class DB {
                     }
 
                     result += "<fieldset>"
-                            + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+                            + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
 
                     if (rs.getBoolean("shipped") == false) {
                         result += "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>";
@@ -522,7 +537,7 @@ public class DB {
             out = "<table id=\"orderlist\"><tr><td>Cliente</td><td>Destinazione</td><td>Pizza</td><td>Quante?</td><td>Data</td><td>Fascia Oraria</td><td>In viaggio?</td><td>Arrivata?</td></tr>";
             while (rs.next()) {
 
-                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + rs.getString("datao") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
+                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + convData(rs.getString("datao")) + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
             }
             out = out + "</table>";
             st.close();
@@ -640,7 +655,7 @@ public class DB {
             }
 
             result += "<fieldset>"
-                    + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+                    + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
 
             if (rs.getBoolean("shipped") == false) {
                 result += "<input class='button' id='spedisci' type='submit' value='Spedisci Ordine'/>";
@@ -668,7 +683,7 @@ public class DB {
                     }
 
                     result += "<fieldset>"
-                            + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+                            + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
 
                     if (rs.getBoolean("shipped") == false) {
                         result += "<input class='button' id='spedisci' type='submit' value='Spedisci Ordine'/>";
@@ -724,7 +739,7 @@ public class DB {
             }
 
             result += "<fieldset>"
-                    + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+                    + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
 
             if (rs.getBoolean("shipped") == false) {
                 result += "<input class='button' id='spedisci' type='submit' value='Spedisci Ordine'/>";
@@ -752,7 +767,7 @@ public class DB {
                     }
 
                     result += "<fieldset>"
-                            + "<legend>Ordine per il: " + rs.getDate("datao") + "  (h: " + rs.getString("hour_time") + ")</legend>";
+                            + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
 
                     if (rs.getBoolean("shipped") == false) {
                         result += "<input class='button' id='spedisci' type='submit' value='Spedisci Ordine'/>";

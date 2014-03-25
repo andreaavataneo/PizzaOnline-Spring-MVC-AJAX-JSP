@@ -99,25 +99,16 @@ public class FormController {
         return returnText;
     }
 
-    @RequestMapping(value = "/viewO", method = RequestMethod.POST)
-    @ResponseBody
-    public String modify(@ModelAttribute(value = "pizza") Pizza pizza, BindingResult result) {
-        String returnText = "<p>Errore nell'interazione con il DB</p>";
-        DB jdbc = new DB();
-        if (!result.hasErrors()) {
-            returnText = jdbc.allOrders();
-        };
-        return returnText;
-    }
+
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @ResponseBody
     public String loadP(@ModelAttribute(value = "pizza") Pizza pizza, @PathVariable Integer id, BindingResult result) {
         String returnText = "<p>Errore nell'interazione con il DB</p>";
-        //if (!result.hasErrors()) {
+        if (!result.hasErrors()) {
         DB jdbc = new DB();
         returnText = jdbc.getPizzaData(id);
-        //}
+        }
         return returnText;
     }
 
@@ -149,7 +140,6 @@ public class FormController {
                 giorno = stringVal;
             }
         }
-
         res += orario + " " + giorno;
 
         while (st2.hasMoreTokens()) {

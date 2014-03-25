@@ -13,6 +13,7 @@
         <%@include file="../../resources/common/head.jsp" %>        
     </head>
     <body>
+        <div id="finestra" title="Conferma?"></div>
         <script type="text/javascript">
 
             function doAjaxPost() {

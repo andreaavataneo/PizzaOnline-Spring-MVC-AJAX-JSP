@@ -25,7 +25,6 @@
                         success: function(response) {
                             // we have the response          
                             alert(response);
-                            jAlert('This is a custom alert box', 'Alert Dialog');
                             location.reload();
                         },
                         error: function(e) {
@@ -52,7 +51,7 @@
                         }
                     });
                 });
-                
+
                 $('.orderCon').click(function(e) {
                     e.preventDefault();
                     var day = $(this).find('#datao').val();
@@ -71,11 +70,12 @@
                         }
                     });
                 });
-                
+
             });
         </script>
     </head>
     <body>
+        <div id="finestra" title="Conferma?"></div>
         <header>
             <%@include file="../../resources/common/header.html" %>           
         </header>    
