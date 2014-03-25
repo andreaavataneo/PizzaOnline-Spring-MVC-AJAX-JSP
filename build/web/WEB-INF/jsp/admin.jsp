@@ -16,6 +16,8 @@
         <script type="text/javascript">
 
             $(document).ready(function() {
+                
+                $('#finestra').dialog();
 
                 $('#idSel').click(function() {
 
@@ -112,6 +114,11 @@
             <%@include file="../../resources/common/header.html" %>           
         </header>    
         <article>
+            
+            <div id="finestra" title="Titolo della finestra">
+        <p>Contenuto della finestra</p>
+    </div>
+
             
                 <%@include file="../../resources/common/formAdmin.jsp" %>
 

@@ -25,6 +25,7 @@
                         success: function(response) {
                             // we have the response          
                             alert(response);
+                            jAlert('This is a custom alert box', 'Alert Dialog');
                             location.reload();
                         },
                         error: function(e) {
