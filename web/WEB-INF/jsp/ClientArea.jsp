@@ -12,20 +12,25 @@
     <head>
         <%@include file="../../resources/common/head.jsp" %>
         <script type="text/javascript">
-
             $(document).ready(function() {
                 $('#newOrder').submit(function(e) {
                     e.preventDefault();
                     var variabili = $('#newOrder').serialize();
-                    //alert(variabili);
-
                     $.ajax({
                         type: 'POST',
                         url: variabili + "/createOrd.htm",
                         success: function(response) {
-                            // we have the response          
-                            alert(response);
-                            location.reload();
+                            $('#finestra').html(response);
+                            $('#finestra').dialog({
+                                modal: true,
+                                width:350,
+                                buttons: {
+                                    "Ok": function() {
+                                        $(this).dialog("close");
+                                        location.reload();
+                                    }
+                                }
+                            });
                         },
                         error: function(e) {
                             alert('Error: ' + e);
@@ -37,14 +42,22 @@
                     e.preventDefault();
                     var day = $(this).find('#datao').val();
                     var time = $(this).find('#hour_time').val();
-
+                    var questo = $(this);
                     $.ajax({
                         type: 'POST',
                         url: day + "/" + time + "/delOrd.htm",
                         success: function() {
-                            // we have the response
-                            alert("Ordine eliminato con successo!");
-                            location.reload();
+                            $('#finestra3').html("Ordine annulato ...");
+                            $('#finestra3').dialog({
+                                modal: true,
+                                width: 350,
+                                buttons: {
+                                    "Ok": function() {
+                                        $(this).dialog("close");
+                                        location.reload();
+                                    }
+                                }
+                            });
                         },
                         error: function(e) {
                             alert('Error: ' + e);
@@ -61,21 +74,30 @@
                         type: 'POST',
                         url: day + "/" + time + "/conOrd.htm",
                         success: function() {
-                            // we have the response
-                            alert("Consegna effettuata con successo!");
-                            location.reload();
+                            $('#finestra2').html("Consegna effettuata con successo!");
+                            $('#finestra2').dialog({
+                                modal: true,
+                                width: 350,
+                                buttons: {
+                                    "Ok": function() {
+                                        $(this).dialog("close");
+                                        location.reload();
+                                    }
+                                }
+                            });
                         },
                         error: function(e) {
                             alert('Error: ' + e);
                         }
                     });
                 });
-
             });
         </script>
     </head>
     <body>
-        <div id="finestra" title="Conferma?"></div>
+        <div id="finestra" title="Ordinazione"></div>
+        <div id="finestra2" title="Consegna"></div>
+        <div id="finestra3" title="Annullamento"></div>
         <header>
             <%@include file="../../resources/common/header.html" %>           
         </header>    

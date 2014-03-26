@@ -10,18 +10,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <%@include file="../../resources/common/head.jsp" %>        
-    </head>
-    <body>
-        <div id="finestra" title="Conferma?"></div>
+        <%@include file="../../resources/common/head.jsp" %>   
         <script type="text/javascript">
-
             function doAjaxPost() {
                 // get the form values  
                 var mail = $('#email').val();
                 var pwd = $('#pwd').val();
                 var data = $('form').serialize();
-
                 if (validateForm(mail, pwd)) {
                     $.ajax({
                         type: "POST",
@@ -34,11 +29,11 @@
                             } else if (response.toString() === "admin") {
                                 $('#log').fadeOut("slow");
                                 $('#menu').fadeOut("slow").load('<c:url value="/resources/common/adminMenu.jsp"/>').fadeIn("slow");
-                                $('#info').html("Benvenuto nell'area amministratore! "+mail).fadeIn("slow");
+                                $('#info').html("Benvenuto nell'area amministratore! " + mail).fadeIn("slow");
                             } else {
                                 $('#log').fadeOut("slow");
                                 $('#menu').fadeOut("slow").load('<c:url value="/resources/common/clientMenu.jsp"/>').fadeIn("slow");
-                                $('#info').html("Benvenuto nell'area clienti! "+mail).fadeIn("slow");
+                                $('#info').html("Benvenuto nell'area clienti! " + mail).fadeIn("slow");
                             }
                         },
                         error: function(e) {
@@ -49,27 +44,29 @@
             }
 
             function validateForm(mail, pwd) {
-            
-               var i=0;                
+                var i = 0;
                 if (mail === "") {
                     $('#mail_err').show();
                     i++;
                 } else {
-                    $('#mail_err').hide();                   
+                    $('#mail_err').hide();
                 }
                 if (pwd === "") {
                     $('#pwd_err').show();
                     i++;
                 } else {
-                    $('#pwd_err').hide();                    
+                    $('#pwd_err').hide();
                 }
-                if(i===0){
+                if (i === 0) {
                     return true;
-                }else{
+                } else {
                     return false;
                 }
             }
-        </script>       
+        </script>
+    </head>
+    <body>
+        <div id="finestra" title="Conferma?"></div>
         <header>
             <%@include file="../../resources/common/header.html" %> 
         </header> 
@@ -81,6 +78,7 @@
                 <%@include file="../../resources/common/formLog.html" %>
                 <p id="info"></p>                
             </section>
+                
         </article>
         <nav id="menu"> 
             ${menuType}

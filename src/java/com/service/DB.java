@@ -25,9 +25,8 @@ public class DB {
     private static final String us = "app";
     private static final String pwd = "app";
 
-    
     public String convData(String data) {
-        String conv="";
+        String conv = "";
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -38,6 +37,7 @@ public class DB {
         conv = cal.get(cal.DAY_OF_MONTH) + "-" + cal.get(cal.MONTH) + "-" + cal.get(cal.YEAR);
         return conv;
     }
+
     /**
      * Restituisce una tabella chiamata 'pizzalist' con le pizze appunto
      *
@@ -363,6 +363,7 @@ public class DB {
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("select (select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP,"
+                    + "(select price from pizzas where pizzas.ID_P=orders.ID_P) as price,"
                     + "numberOf, datao, hour_time, shipped, received, id_o  from orders "
                     + "where id_u=" + id_u + " AND datao > current_date AND received=false order by datao,hour_time");
 
@@ -376,6 +377,7 @@ public class DB {
             String dataOld = rs.getString("datao");
             String hourOld = rs.getString("hour_time");
             int c = 1;
+            double tot = 0;
             result += "<section class='ordini'>";
             if (rs.getBoolean("shipped") == false) {
                 result += "<form class='orderDel' name='ord" + c + "' id='ord" + c + "' >";
@@ -394,12 +396,16 @@ public class DB {
 
             result += "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
                     + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
-                    + "<table><tr><td>Pizza</td><td>Quantit&agrave;</td></tr>"
+                    + "<table><tr><th>Pizza</th><th>Quantit&agrave;</th></tr>"
                     + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+
+            tot += rs.getInt("numberOf") * rs.getDouble("price");
             while (rs.next()) {
 
                 if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time")))) {
                     c++;
+                    result += "<tr><th>Totale</th><td>" + tot + " &euro;</td></tr>";
+                    tot = 0;
                     result += "</table></fieldset></form></section>";
 
                     result += "<section class='ordini'>";
@@ -419,13 +425,16 @@ public class DB {
                     }
                     result += "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
                             + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
-                            + "<table><tr><td>Pizza</td><td>Quantit&agrave;</td></tr>";
+                            + "<table><tr><th>Pizza</th><th>Quantit&agrave;</th></tr>";
                 }
 
                 result = result + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+                tot += rs.getInt("numberOf") * rs.getDouble("price");
                 dataOld = rs.getString("datao");
                 hourOld = rs.getString("hour_time");
             }
+            result += "<tr><th>Totale</th><td>" + tot + " &euro;</td></tr>";
+            tot = 0;
             result = result + "</table></fieldset></form></section>";
             rs.close();
             st.close();
@@ -444,6 +453,7 @@ public class DB {
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("select (select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP,"
+                    + "(select price from pizzas where pizzas.ID_P=orders.ID_P) as price,"
                     + "numberOf, datao, hour_time, shipped, received, id_o  from orders "
                     + "where id_u=" + id_u + " AND datao = current_date AND received=false order by datao,hour_time");
 
@@ -457,6 +467,7 @@ public class DB {
             String dataOld = rs.getString("datao");
             String hourOld = rs.getString("hour_time");
             int c = 1;
+            double tot = 0;
             result += "<section class='ordini'>";
             if (rs.getBoolean("shipped") == false) {
                 result += "<form class='orderDel' name='ord" + c + "' id='ord" + c + "' >";
@@ -475,12 +486,16 @@ public class DB {
 
             result += "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
                     + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
-                    + "<table><tr><td>Pizza</td><td>Quantit&agrave;</td></tr>"
+                    + "<table><tr><th>Pizza</th><th>Quantit&agrave;</th></tr>"
                     + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+
+            tot += rs.getInt("numberOf") * rs.getDouble("price");
             while (rs.next()) {
 
                 if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time")))) {
                     c++;
+                    result += "<tr><th>Totale</th><td>" + tot + " &euro;</td></tr>";
+                    tot = 0;
                     result += "</table></fieldset></form></section>";
 
                     result += "<section class='ordini'>";
@@ -500,13 +515,16 @@ public class DB {
                     }
                     result += "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
                             + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
-                            + "<table><tr><td>Pizza</td><td>Quantit&agrave;</td></tr>";
+                            + "<table><tr><th>Pizza</th><th>Quantit&agrave;</th></tr>";
                 }
 
                 result = result + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+                tot += rs.getInt("numberOf") * rs.getDouble("price");
                 dataOld = rs.getString("datao");
                 hourOld = rs.getString("hour_time");
             }
+            result += "<tr><th>Totale</th><td>" + tot + " &euro;</td></tr>";
+            tot = 0;
             result = result + "</table></fieldset></form></section>";
             rs.close();
             st.close();
@@ -634,6 +652,7 @@ public class DB {
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("select (select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP,"
+                    + "(select price from pizzas where pizzas.ID_P=orders.ID_P) as price,"
                     + "numberOf, datao, hour_time, shipped, received, id_o, nameu, surname, address, phone from orders, users "
                     + "where users.id_u=orders.id_u AND datao = current_date AND received=false order by datao,hour_time");
 
@@ -647,6 +666,7 @@ public class DB {
             String dataOld = rs.getString("datao");
             String hourOld = rs.getString("hour_time");
             int c = 1;
+            double tot = 0;
             result += "<section class='ordini'>";
             if (rs.getBoolean("shipped") == false) {
                 result += "<form class='orderSend' name='ord" + c + "' id='ord" + c + "' >";
@@ -669,10 +689,13 @@ public class DB {
                     + "<tr><td>" + rs.getString("address") + "</td><td>" + rs.getString("phone") + "</td></tr>"
                     + "<tr><th>Pizza</th><th>Quantit&agrave;</th></tr>"
                     + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+            tot += rs.getInt("numberOf") * rs.getDouble("price");
             while (rs.next()) {
 
                 if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time")))) {
                     c++;
+                    result += "<tr><td>Totale</td><td>" + tot + " &euro;</td></tr>";
+                    tot = 0;
                     result += "</table></fieldset></form></section>";
 
                     result += "<section class='ordini'>";
@@ -698,9 +721,12 @@ public class DB {
                 }
 
                 result = result + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+                tot += rs.getInt("numberOf") * rs.getDouble("price");
                 dataOld = rs.getString("datao");
                 hourOld = rs.getString("hour_time");
             }
+            result += "<tr><th>Totale</th><td>" + tot + " &euro;</td></tr>";
+            tot = 0;
             result = result + "</table></fieldset></form></section>";
             rs.close();
             st.close();
@@ -718,6 +744,7 @@ public class DB {
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("select (select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP,"
+                    + "(select price from pizzas where pizzas.ID_P=orders.ID_P) as price,"
                     + "numberOf, datao, hour_time, shipped, received, id_o, nameu, surname, address, phone from orders, users "
                     + "where users.id_u=orders.id_u AND datao > current_date AND received=false order by datao,hour_time");
 
@@ -731,6 +758,7 @@ public class DB {
             String dataOld = rs.getString("datao");
             String hourOld = rs.getString("hour_time");
             int c = 1;
+            double tot = 0;
             result += "<section class='ordini'>";
             if (rs.getBoolean("shipped") == false) {
                 result += "<form class='orderSend' name='ord" + c + "' id='ord" + c + "' >";
@@ -753,10 +781,13 @@ public class DB {
                     + "<tr><td>" + rs.getString("address") + "</td><td>" + rs.getString("phone") + "</td></tr>"
                     + "<tr><th>Pizza</th><th>Quantit&agrave;</th></tr>"
                     + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+            tot += rs.getInt("numberOf") * rs.getDouble("price");
             while (rs.next()) {
 
                 if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time")))) {
                     c++;
+                    result += "<tr><td>Totale</td><td>" + tot + " &euro;</td></tr>";
+                    tot = 0;
                     result += "</table></fieldset></form></section>";
 
                     result += "<section class='ordini'>";
@@ -782,9 +813,12 @@ public class DB {
                 }
 
                 result = result + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
+                tot += rs.getInt("numberOf") * rs.getDouble("price");
                 dataOld = rs.getString("datao");
                 hourOld = rs.getString("hour_time");
             }
+            result += "<tr><th>Totale</th><td>" + tot + " &euro;</td></tr>";
+            tot = 0;
             result = result + "</table></fieldset></form></section>";
             rs.close();
             st.close();
@@ -794,4 +828,5 @@ public class DB {
         }
         return result;
     }
+    
 }

@@ -11,11 +11,7 @@
 <html>
     <head>
         <%@include file="../../resources/common/head.jsp" %>
-    </head>
-    <body>
-        <div id="finestra" title="Conferma?"></div>
         <script type="text/javascript">
-
             function doAjaxPost() {
                 // get the form values  
                 var mail = $('#email').val();
@@ -44,8 +40,7 @@
             }
 
             function validateForm(mail, pwd, name, surname, phone, addr) {
-
-                var i=0;
+                var i = 0;
                 if (name === "") {
                     $('#name_err').show();
                     i++;
@@ -62,7 +57,7 @@
                     $('#surname_err').show();
                     i++;
                 } else {
-                    $('#surname_err').hide();                    
+                    $('#surname_err').hide();
                 }
                 if (addr === "") {
                     $('#addr_err').show();
@@ -75,21 +70,24 @@
                     $('#email_err').show();
                     i++;
                 } else {
-                    $('#email_err').hide();                   
+                    $('#email_err').hide();
                 }
                 if (pwd === "") {
                     $('#pwd_err').show();
                     i++;
                 } else {
-                    $('#pwd_err').hide();                    
+                    $('#pwd_err').hide();
                 }
-                if(i===0){
+                if (i === 0) {
                     return true;
-                }else{
+                } else {
                     return false;
                 }
             }
         </script>
+    </head>
+    <body>
+        <div id="finestra" title="Conferma?"></div>
         <header>
             <%@include file="../../resources/common/header.html" %>           
         </header>         

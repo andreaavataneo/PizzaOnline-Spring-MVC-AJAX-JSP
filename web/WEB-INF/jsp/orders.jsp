@@ -11,9 +11,6 @@
 <html>
     <head>
         <%@include file="../../resources/common/head.jsp" %>
-    </head>
-    <body>
-        <div id="finestra" title="Conferma?"></div>
         <script type="text/javascript">
             $(document).ready(function() {
 
@@ -27,8 +24,17 @@
                         url: day + "/" + time + "/orderSend.htm",
                         success: function() {
                             // we have the response
-                            alert("Fattorino in viaggio!");
-                            location.reload();
+                            $('#finestra').html("Fattorino in viaggio!");
+                            $('#finestra').dialog({
+                                modal: true,
+                                width: 350,
+                                buttons: {
+                                    "Ok": function() {
+                                        $(this).dialog("close");
+                                        location.reload();
+                                    }
+                                }
+                            });
                         },
                         error: function(e) {
                             alert('Error: ' + e);
@@ -36,8 +42,12 @@
                     });
                 });
             });
-
-        </script>        
+        </script>
+    </head>
+    <body>
+        <div id="finestra" title="Consegna in corso ..."></div>
+        
+                
         <header>
             <%@include file="../../resources/common/header.html" %>           
         </header>    

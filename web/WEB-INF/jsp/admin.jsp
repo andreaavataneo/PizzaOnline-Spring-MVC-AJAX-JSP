@@ -11,9 +11,6 @@
 <html>
     <head>
         <%@include file="../../resources/common/head.jsp" %>
-    </head>
-    <body>
-        <div id="finestra" title="Conferma?"></div>
         <script type="text/javascript">
 
             $(document).ready(function() {
@@ -47,6 +44,7 @@
                     $('#finestra').html("Sei sicuro di volere " + this.id + " la pizza?");
                     $('#finestra').dialog({
                         modal: true,
+                        width: 350,
                         buttons: {
                             "Conferma": function() {
                                 if (validateForm(name, descr, price)) {
@@ -55,7 +53,7 @@
                                         type: "POST",
                                         url: act + "/" + id_p + "/modify.htm",
                                         data: data,
-                                        success: function(response) {                                         
+                                        success: function(response) {
                                             location.reload();
                                         },
                                         error: function(e) {
@@ -93,7 +91,11 @@
                     return true;
                 }
             }
-        </script>        
+        </script>
+    </head>
+    <body>
+        <div id="finestra" title="Conferma?"></div>
+
         <header>
             <%@include file="../../resources/common/header.html" %>           
         </header>    
