@@ -107,9 +107,7 @@
             <section>
                 <p hidden="true" class="error" id="name_err">Non hai inserito il nome della pizza!</p>
                 <p hidden="true" class="error" id="descr_err">Non hai inserito la ricetta della pizza!</p>
-                <p hidden="true" class="error" id="price_err">Non hai inserito il prezzo della pizza!</p>  
-                <p id="top"></p>
-                <table class="main"></table>                 
+                <p hidden="true" class="error" id="price_err">Non hai inserito il prezzo della pizza!</p>                   
             </section>
         </article>
         <nav id="menu"> 

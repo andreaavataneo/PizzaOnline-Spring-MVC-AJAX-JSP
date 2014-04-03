@@ -34,7 +34,19 @@ public class DB {
         } catch (ParseException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
-        conv = cal.get(cal.DAY_OF_MONTH) + "-" + cal.get(cal.MONTH) + "-" + cal.get(cal.YEAR);
+        int month = cal.get(cal.MONTH) + 1;
+        int day = cal.get(cal.DAY_OF_MONTH);
+        String sm = Integer.toString(month);
+        String sd = Integer.toString(day);
+        if (month < 10) {
+            sm = "0" + sm;
+        }
+        if (day < 10) {
+            sd = "0" + sd;
+        }
+
+
+        conv = sd + "-" + sm + "-" + cal.get(cal.YEAR);
         return conv;
     }
 
@@ -44,18 +56,19 @@ public class DB {
      * @return out
      */
     public String showMenu() {
-        String out;
+        String out = "";
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS");
-            out = "<table class=\"main\" id=\"pizzalist\"><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td></tr>";
-            while (rs.next()) {
 
-                out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td></tr>";
+            while (rs.next()) {
+                out += "<section class='ordini'><form><fieldset>"
+                        + "<legend>" + rs.getString("namep") + "</legend>"
+                        + "<table><tr><td>" + rs.getString("recipe") + "</td></tr><tr><td>" + rs.getDouble("price") + " &euro;</td></tr></table>"
+                        + "</fieldset></form></section>";
             }
-            out = out + "</table>";
             st.close();
             conn.close();
         } catch (SQLException e) {
@@ -247,23 +260,10 @@ public class DB {
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS");
-            /*<form:form commandName="pizza" id="formAddP"> 
-             <fieldset>
-             <legend>Aggiungi, modifica o elimina una pizza</legend>
-             <dl> 
-             <dt><label>Seleziona la pizza</label></dt>
-             <dd><form:select path="id" id="idSel" items="${allP}"/></dd>
-             <dt><label>Nome: </label></dt>
-             <dd><form:input path="name" id="nameP" type="text" placeholder="Nome nuova pizza" required="on" autofocus="on" ></form:input></dd>    
-             <dt><label>Ricetta: </label></dt>
-             <dd><form:input path="description" id="description" autofocus="on" type="text" placeholder="Specifiche ingredienti" required="on"></form:input></dd>
-             <dt><label>Prezzo: </label></dt>
-             <dd><form:input path="price" id="price" type="number" required="on" autofocus="on"></form:input></dd>            
-             </dl>
-             </fieldset>*/
+
             out = "<form id='newOrder'>"
                     + "<fieldset><legend>Crea nuovo ordine</legend>"
-                    + "<table id='pizzalist'><tr><td>Nome</td><td>Ricetta</td><td>Prezzo(€)</td><td>Ordine</td></tr>";
+                    + "<table id='pizzalist'><tr><th>Pizza</th><th>Ricetta</th><th>Prezzo(€)</th><th>Ordine</th></tr>";
 
             while (rs.next()) {
 
@@ -272,8 +272,12 @@ public class DB {
             GregorianCalendar gc = new GregorianCalendar();
 
             out = out + "</table>"
-                    + "A che ora ? <input type='time' id='hour_time' name='hour_time' min='19:00' max='23:00'/>"
-                    + "Quando ? <input type='date' id='dateo' name='dateo' min='" + gc.get(Calendar.YEAR) + "-" + gc.get(Calendar.MONTH) + "-" + gc.get(Calendar.DAY_OF_MONTH) + "'/>"
+                    //+ "A che ora ? <input type='time' id='hour_time' name='hour_time' min='19:00' max='23:00'/>"
+                    + "A che ora ?" + orariConsegne()
+                    + "Quando ? <input type='date' id='dateo' name='dateo' "
+                    + "min='" + gc.get(Calendar.YEAR) + "-" + gc.get(Calendar.MONTH) + "-" + gc.get(Calendar.DAY_OF_MONTH) + "'"
+                    //+ " value='"+ gc.get(Calendar.YEAR) + "-" + gc.get(Calendar.MONTH) + "-" + gc.get(Calendar.DAY_OF_MONTH) +"'"
+                    + "/>"
                     + "<input type='submit' class='button' id='Ordina' value='Ordina'/>"
                     + "</fieldset></form>";
 
@@ -324,32 +328,6 @@ public class DB {
      *
      * @return out
      */
-    public String allWaitingOrders() {
-        String out;
-        try {
-            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
-            Connection conn = DriverManager.getConnection(ur, us, pwd);
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery("select (select email from users where users.ID_U=orders.ID_U) as cliente,"
-                    + "(select address from users where users.ID_U=orders.ID_U) as destinazione,"
-                    + "(select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP,"
-                    + "numberOf, datao, hour_time, shipped, received  from orders "
-                    + "where shipped=false AND datao > current_date order by datao,hour_time,id_u");
-            out = "<table id=\"orderlist\"><tr><td>Cliente</td><td>Destinazione</td><td>Pizza</td><td>Quante?</td><td>Data</td><td>Fascia Oraria</td><td>In viaggio?</td><td>Arrivata?</td></tr>";
-            while (rs.next()) {
-
-                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + convData(rs.getString("datao")) + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
-            }
-            out = out + "</table>";
-            st.close();
-            conn.close();
-        } catch (SQLException e) {
-            out = e.getMessage();
-        }
-        return out;
-
-    }
-
     /**
      * restituisce una tabella id='clientOrders' con gli ordini di un
      * determinato cliente (data >= a oggi)
@@ -372,7 +350,7 @@ public class DB {
                 rs.close();
                 st.close();
                 conn.close();
-                return "<section class='ordini'>Nessun ordine futuro ...</section>";
+                return "<section class='ordini'></section>";
             }
             String dataOld = rs.getString("datao");
             String hourOld = rs.getString("hour_time");
@@ -386,7 +364,7 @@ public class DB {
             }
 
             result += "<fieldset>"
-                    + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
+                    + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "<br>(h: " + rs.getString("hour_time") + ")</legend>";
 
             if (rs.getBoolean("shipped") == false) {
                 result += "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>";
@@ -404,7 +382,7 @@ public class DB {
 
                 if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time")))) {
                     c++;
-                    result += "<tr><th>Totale</th><td>" + tot + " &euro;</td></tr>";
+                    result += "<tr><th>Totale</th><td>" + String.format("%.2f", tot) + " &euro;</td></tr>";
                     tot = 0;
                     result += "</table></fieldset></form></section>";
 
@@ -416,7 +394,7 @@ public class DB {
                     }
 
                     result += "<fieldset>"
-                            + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
+                            + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "<br>(h: " + rs.getString("hour_time") + ")</legend>";
 
                     if (rs.getBoolean("shipped") == false) {
                         result += "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>";
@@ -433,7 +411,7 @@ public class DB {
                 dataOld = rs.getString("datao");
                 hourOld = rs.getString("hour_time");
             }
-            result += "<tr><th>Totale</th><td>" + tot + " &euro;</td></tr>";
+            result += "<tr><th>Totale</th><td>" + String.format("%.2f", tot) + " &euro;</td></tr>";
             tot = 0;
             result = result + "</table></fieldset></form></section>";
             rs.close();
@@ -462,7 +440,7 @@ public class DB {
                 rs.close();
                 st.close();
                 conn.close();
-                return "<section class='ordini'>Nessun ordine per oggi ...</section>";
+                return "<section class='ordini'></section>";
             }
             String dataOld = rs.getString("datao");
             String hourOld = rs.getString("hour_time");
@@ -476,7 +454,7 @@ public class DB {
             }
 
             result += "<fieldset>"
-                    + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
+                    + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "<br>(h: " + rs.getString("hour_time") + ")</legend>";
 
             if (rs.getBoolean("shipped") == false) {
                 result += "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>";
@@ -494,7 +472,7 @@ public class DB {
 
                 if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time")))) {
                     c++;
-                    result += "<tr><th>Totale</th><td>" + tot + " &euro;</td></tr>";
+                    result += "<tr><th>Totale</th><td>" + String.format("%.2f", tot) + " &euro;</td></tr>";
                     tot = 0;
                     result += "</table></fieldset></form></section>";
 
@@ -506,7 +484,7 @@ public class DB {
                     }
 
                     result += "<fieldset>"
-                            + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
+                            + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "<br>(h: " + rs.getString("hour_time") + ")</legend>";
 
                     if (rs.getBoolean("shipped") == false) {
                         result += "<input class='button' id='elimina' type='submit' value='Elimina Ordine'/>";
@@ -523,7 +501,7 @@ public class DB {
                 dataOld = rs.getString("datao");
                 hourOld = rs.getString("hour_time");
             }
-            result += "<tr><th>Totale</th><td>" + tot + " &euro;</td></tr>";
+            result += "<tr><th>Totale</th><td>" + String.format("%.2f", tot) + " &euro;</td></tr>";
             tot = 0;
             result = result + "</table></fieldset></form></section>";
             rs.close();
@@ -533,38 +511,6 @@ public class DB {
             result += e.getMessage();
         }
         return result;
-    }
-
-    /**
-     * restituisce una tabella id='orderlist' con tutti gli ordini evasi ma
-     * ancora non confermati
-     *
-     * @return out
-     */
-    public String allShippedOrders() {
-        String out;
-        try {
-            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
-            Connection conn = DriverManager.getConnection(ur, us, pwd);
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery("select (select email from users where users.ID_U=orders.ID_U) as cliente,"
-                    + "(select address from users where users.ID_U=orders.ID_U) as destinazione,"
-                    + "(select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP,"
-                    + "numberOf, datao, hour_time, shipped, received  from orders "
-                    + "where shipped=true AND datao > current_date order by datao,hour_time,id_u");
-            out = "<table id=\"orderlist\"><tr><td>Cliente</td><td>Destinazione</td><td>Pizza</td><td>Quante?</td><td>Data</td><td>Fascia Oraria</td><td>In viaggio?</td><td>Arrivata?</td></tr>";
-            while (rs.next()) {
-
-                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + convData(rs.getString("datao")) + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
-            }
-            out = out + "</table>";
-            st.close();
-            conn.close();
-        } catch (SQLException e) {
-            out = e.getMessage();
-        }
-        return out;
-
     }
 
     /**
@@ -661,7 +607,11 @@ public class DB {
                 rs.close();
                 st.close();
                 conn.close();
-                return "<section class='ordini'>Nessun ordine per oggi ...</section>";
+                return ""
+                        + "<form><fieldset><legend>"
+                        + "Ordini per oggi"
+                        + "</legend>Attenzione! Non ci sono ordinazioni!</fieldset></form>"
+                        + "";
             }
             String dataOld = rs.getString("datao");
             String hourOld = rs.getString("hour_time");
@@ -675,7 +625,7 @@ public class DB {
             }
 
             result += "<fieldset>"
-                    + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
+                    + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "<br>(h: " + rs.getString("hour_time") + ")</legend>";
 
             if (rs.getBoolean("shipped") == false) {
                 result += "<input class='button' id='spedisci' type='submit' value='Spedisci Ordine'/>";
@@ -694,7 +644,7 @@ public class DB {
 
                 if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time")))) {
                     c++;
-                    result += "<tr><td>Totale</td><td>" + tot + " &euro;</td></tr>";
+                    result += "<tr><td>Totale</td><td>" + String.format("%.2f", tot) + " &euro;</td></tr>";
                     tot = 0;
                     result += "</table></fieldset></form></section>";
 
@@ -706,7 +656,7 @@ public class DB {
                     }
 
                     result += "<fieldset>"
-                            + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
+                            + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "<br>(h: " + rs.getString("hour_time") + ")</legend>";
 
                     if (rs.getBoolean("shipped") == false) {
                         result += "<input class='button' id='spedisci' type='submit' value='Spedisci Ordine'/>";
@@ -725,7 +675,7 @@ public class DB {
                 dataOld = rs.getString("datao");
                 hourOld = rs.getString("hour_time");
             }
-            result += "<tr><th>Totale</th><td>" + tot + " &euro;</td></tr>";
+            result += "<tr><th>Totale</th><td>" + String.format("%.2f", tot) + " &euro;</td></tr>";
             tot = 0;
             result = result + "</table></fieldset></form></section>";
             rs.close();
@@ -745,88 +695,82 @@ public class DB {
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("select (select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP,"
                     + "(select price from pizzas where pizzas.ID_P=orders.ID_P) as price,"
-                    + "numberOf, datao, hour_time, shipped, received, id_o, nameu, surname, address, phone from orders, users "
-                    + "where users.id_u=orders.id_u AND datao > current_date AND received=false order by datao,hour_time");
+                    + "numberOf, datao, hour_time, shipped, received, id_o, nameu, surname, address, phone, email from orders, users "
+                    + "where users.id_u=orders.id_u AND datao > current_date AND received=false order by datao,hour_time,email");
 
             rs.next();
             if (rs.getRow() != 1) {
                 rs.close();
                 st.close();
                 conn.close();
-                return "<section class='ordini'>Nessun ordine per oggi ...</section>";
+                return "<section class='ordiniFut'></section>";
             }
+
+
+
+            String emailOld = rs.getString("email");
             String dataOld = rs.getString("datao");
             String hourOld = rs.getString("hour_time");
             int c = 1;
-            double tot = 0;
-            result += "<section class='ordini'>";
-            if (rs.getBoolean("shipped") == false) {
-                result += "<form class='orderSend' name='ord" + c + "' id='ord" + c + "' >";
-            } else {
-                result += "<form class='orderShipped' name='ord" + c + "' id='ord" + c + "' >";
-            }
 
-            result += "<fieldset>"
-                    + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
 
-            if (rs.getBoolean("shipped") == false) {
-                result += "<input class='button' id='spedisci' type='submit' value='Spedisci Ordine'/>";
-            } else {
-                result += "<input class='button' id='aspetta' type='button' value='Aspetta Consegna'/>";
-            }
+            result += "<section class='ordiniFut'>";
+            result += "<form class='futureOrder' name='ord" + c + "' id='ord" + c + "' >"
+                    + "<fieldset><legend>Ordini per il " + convData(dataOld) + "</legend>"
+                    + "<table><tr><th>Pizza</th><th>Quantit&agrave;</th><th>Orario</th><th>Cliente</th></tr>"
+                    + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("email") + "</td></tr>";
 
-            result += "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
-                    + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
-                    + "<table><tr><td>" + rs.getString("nameu") + "</td><td>" + rs.getString("surname") + "</td></tr>"
-                    + "<tr><td>" + rs.getString("address") + "</td><td>" + rs.getString("phone") + "</td></tr>"
-                    + "<tr><th>Pizza</th><th>Quantit&agrave;</th></tr>"
-                    + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
-            tot += rs.getInt("numberOf") * rs.getDouble("price");
             while (rs.next()) {
-
-                if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time")))) {
-                    c++;
-                    result += "<tr><td>Totale</td><td>" + tot + " &euro;</td></tr>";
-                    tot = 0;
+                if ((!dataOld.equals(rs.getString("datao")))) {
                     result += "</table></fieldset></form></section>";
-
-                    result += "<section class='ordini'>";
-                    if (rs.getBoolean("shipped") == false) {
-                        result += "<form class='orderSend' name='ord" + c + "' id='ord" + c + "' >";
-                    } else {
-                        result += "<form class='orderShipped' name='ord" + c + "' id='ord" + c + "' >";
-                    }
-
-                    result += "<fieldset>"
-                            + "<legend>Ordine per il: " + convData(rs.getString("datao")) + "  (h: " + rs.getString("hour_time") + ")</legend>";
-
-                    if (rs.getBoolean("shipped") == false) {
-                        result += "<input class='button' id='spedisci' type='submit' value='Spedisci Ordine'/>";
-                    } else {
-                        result += "<input class='button' id='aspetta' type='button' value='Attendi Consegna'/>";
-                    }
-                    result += "<input type='hidden' id='datao' name='datao' value='" + rs.getString("datao") + "'/>"
-                            + "<input type='hidden' id='hour_time' name='hour_time' value='" + rs.getString("hour_time") + "'/>"
-                            + "<table><tr><td>" + rs.getString("nameu") + "</td><td>" + rs.getString("surname") + "</td></tr>"
-                            + "<tr><td>" + rs.getString("address") + "</td><td>" + rs.getString("phone") + "</td></tr>"
-                            + "<tr><th>Pizza</th><th>Quantit&agrave;</th></tr>";
+                    c++;
+                    emailOld = rs.getString("email");
+                    hourOld = rs.getString("hour_time");
+                    result += "<section class='ordiniFut'>"
+                            + "<form class='futureOrder' name='ord" + c + "' id='ord" + c + "' ><fieldset>"
+                            + "<legend>Ordini per il " + convData(rs.getString("datao")) + "</legend>"
+                            + "<table><tr><th>Pizza</th><th>Quantit&agrave;</th><th>Orario</th><th>Cliente</th></tr>";
                 }
+                if (!emailOld.equals(rs.getString("email")) || (!hourOld.equals(rs.getString("hour_time")))) {
+                    result += "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+                }
+                result += "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("email") + "</td></tr>";
 
-                result = result + "<tr><td>" + rs.getString("nameP") + "</td><td>" + rs.getInt("numberOf") + "</td></tr>";
-                tot += rs.getInt("numberOf") * rs.getDouble("price");
+
                 dataOld = rs.getString("datao");
+                emailOld = rs.getString("email");
                 hourOld = rs.getString("hour_time");
             }
-            result += "<tr><th>Totale</th><td>" + tot + " &euro;</td></tr>";
-            tot = 0;
-            result = result + "</table></fieldset></form></section>";
+            result += "</table></fieldset></form></section>";
             rs.close();
             st.close();
             conn.close();
+
         } catch (SQLException e) {
             result += e.getMessage();
         }
         return result;
     }
-    
+
+    private String orariConsegne() {
+        return "<select id='hour_time' name='hour_time'>"
+                + "<option value='19:00'>19:00</option>"
+                + "<option value='19:15'>19:15</option>"
+                + "<option value='19:30'>19:30</option>"
+                + "<option value='19:45'>19:45</option>"
+                + "<option value='20:00'>20:00</option>"
+                + "<option value='20:15'>20:15</option>"
+                + "<option value='20:30'>20:30</option>"
+                + "<option value='20:45'>20:45</option>"
+                + "<option value='21:00'>21:00</option>"
+                + "<option value='21:15'>21:15</option>"
+                + "<option value='21:30'>21:30</option>"
+                + "<option value='21:45'>21:45</option>"
+                + "<option value='22:00'>22:00</option>"
+                + "<option value='22:15'>22:15</option>"
+                + "<option value='22:30'>22:30</option>"
+                + "<option value='22:45'>22:45</option>"
+                + "<option value='23:00'>23:00</option>"
+                + "</select>";
+    }
 }

@@ -53,6 +53,7 @@
         </header>    
         <article>
             ${todayTask}
+            <section id="middle"></section>
             ${nextTask}
         </article>
         <nav id="menu"> 

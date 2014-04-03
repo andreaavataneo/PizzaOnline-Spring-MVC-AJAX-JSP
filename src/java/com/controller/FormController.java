@@ -99,15 +99,13 @@ public class FormController {
         return returnText;
     }
 
-
-
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     @ResponseBody
     public String loadP(@ModelAttribute(value = "pizza") Pizza pizza, @PathVariable Integer id, BindingResult result) {
         String returnText = "<p>Errore nell'interazione con il DB</p>";
         if (!result.hasErrors()) {
-        DB jdbc = new DB();
-        returnText = jdbc.getPizzaData(id);
+            DB jdbc = new DB();
+            returnText = jdbc.getPizzaData(id);
         }
         return returnText;
     }
@@ -123,6 +121,7 @@ public class FormController {
         String stringId = "";
         String orario = "";
         String giorno = "";
+        int c = 0;
         int numberVal = 0;
         int numberId = 0;
         int posU = 1;
@@ -140,7 +139,7 @@ public class FormController {
                 giorno = stringVal;
             }
         }
-        res += orario + " " + giorno;
+        //res += orario + " " + giorno;
 
         while (st2.hasMoreTokens()) {
             temp = st2.nextToken();
@@ -150,16 +149,25 @@ public class FormController {
                 stringId = temp.substring(1, posU);
                 stringVal = temp.substring(posU + 1, temp.length());
                 numberId = Integer.parseInt(stringId);
-                numberVal = Integer.parseInt(stringVal);
-                res = res + " : " + stringId + " : " + stringVal;
-                if (numberVal > 0) {
-                    if(!jdbc.addOrder(user.getId_u(), numberId, numberVal, giorno, orario)){
-                    return "Hai inserito una data non valida.";
+                if (!stringVal.equals("")) {
+                    numberVal = Integer.parseInt(stringVal);
+                    //res = res + " : " + stringId + " : " + stringVal;
+                    if (numberVal > 0) {
+                        c++;
+                        if (!jdbc.addOrder(user.getId_u(), numberId, numberVal, giorno, orario)) {
+                            return "Hai inserito una data non valida.";
+                        }
                     }
                 }
+
+
             }
         }
-        return "Ordine effettuato con successo per il giorno: \n"+giorno+" alle ore: "+orario;
+        if (c != 0) {
+            return "Ordine effettuato con successo per il giorno: \n" + giorno + " alle ore: " + orario;
+        } else {
+            return "Il tuo ordine è vuoto ...";
+        }
     }
 
     @RequestMapping(value = "/{data}/{ora}/delOrd", method = RequestMethod.POST)
@@ -168,14 +176,14 @@ public class FormController {
         DB jdbc = new DB();
         jdbc.delOrder(user.getId_u(), data, ora);
     }
-    
+
     @RequestMapping(value = "/{data}/{ora}/conOrd", method = RequestMethod.POST)
     @ResponseBody
     public void conOrder(@PathVariable String data, @PathVariable String ora, @ModelAttribute(value = "user") User user) {
         DB jdbc = new DB();
         jdbc.confirmOrder(user.getId_u(), data, ora);
     }
-    
+
     @RequestMapping(value = "/{data}/{ora}/orderSend", method = RequestMethod.POST)
     @ResponseBody
     public void orderSend(@PathVariable String data, @PathVariable String ora, @ModelAttribute(value = "user") User user) {

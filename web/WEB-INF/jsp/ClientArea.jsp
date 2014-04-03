@@ -13,6 +13,17 @@
         <%@include file="../../resources/common/head.jsp" %>
         <script type="text/javascript">
             $(document).ready(function() {
+
+                var now = new Date();
+                var month = (now.getMonth() + 1);
+                var day = now.getDate();
+                if (month < 10)
+                    month = "0" + month;
+                if (day < 10)
+                    day = "0" + day;
+                var today = now.getFullYear() + '-' + month + '-' + day;
+                $('#dateo').val(today);
+
                 $('#newOrder').submit(function(e) {
                     e.preventDefault();
                     var variabili = $('#newOrder').serialize();
@@ -23,7 +34,7 @@
                             $('#finestra').html(response);
                             $('#finestra').dialog({
                                 modal: true,
-                                width:350,
+                                width: 350,
                                 buttons: {
                                     "Ok": function() {
                                         $(this).dialog("close");
@@ -38,7 +49,7 @@
                     });
                 });
 
-                $('.orderDel').click(function(e) {
+                $('.orderDel').submit(function(e) {
                     e.preventDefault();
                     var day = $(this).find('#datao').val();
                     var time = $(this).find('#hour_time').val();
@@ -65,7 +76,7 @@
                     });
                 });
 
-                $('.orderCon').click(function(e) {
+                $('.orderCon').submit(function(e) {
                     e.preventDefault();
                     var day = $(this).find('#datao').val();
                     var time = $(this).find('#hour_time').val();
@@ -111,12 +122,13 @@
                 ${order}
                 <p id="info"></p>
             </section>
-            <section id='todayOrd'>
+            
                 ${todayClientOrders}
-            </section>
-            <section id='nextOrd'>
+            
+            <section id="middle"></section>
+            
                 ${nextClientOrders}
-            </section>
+            
         </article>
         <nav id="menu"> 
             ${menuType}            

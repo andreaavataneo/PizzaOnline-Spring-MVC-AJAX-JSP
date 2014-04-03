@@ -14,9 +14,9 @@
             <section>
                 <p class="hello">${helloMessage}</p>
             </section>
-            <section>
+            
                 ${menu}
-            </section>
+            
         </article>
         <nav id="menu"> 
             ${menuType}            
