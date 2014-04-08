@@ -7,6 +7,7 @@
 <form:form commandName="user">
     <fieldset>
         <legend>Dati Utente</legend>
+        Compila tutti i campi per poter effettuare la registrazione al nostro sito.
         <dl>
             <dt><label for=name>Nome: </label></dt>
             <dd><form:input path="name" id="name" type="text" value="Nome" required="on"/></dd>

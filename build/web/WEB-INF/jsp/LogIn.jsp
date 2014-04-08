@@ -25,15 +25,32 @@
                         success: function(response) {
                             // we have the response 
                             if (response.toString() === "failed") {
-                                $('#info').html("Nome utente o password errati!").fadeIn("slow");
+                                //$('#info').html("Nome utente o password errati!").fadeIn("slow");
+                                $('#finestra').html("Nome utente o password errati!");
+                                $('#finestra').dialog({
+                                    modal: true,
+                                    width: 350,
+                                    buttons: {
+                                        "Ok": function() {
+                                            $(this).dialog("close");
+                                            location.reload();
+                                        }
+                                    }
+                                });
                             } else if (response.toString() === "admin") {
                                 $('#log').fadeOut("slow");
                                 $('#menu').fadeOut("slow").load('<c:url value="/resources/common/adminMenu.jsp"/>').fadeIn("slow");
-                                $('#info').html("Benvenuto nell'area amministratore! " + mail).fadeIn("slow");
+                                $('#info').html("<p>Benvenuto nell'area amministratore! " + mail
+                                        + "<br>Utilizzando il men&ugrave; alla tua sinistra potrai accedere alle "
+                                        + "funzionalit&agrave; del sito.</p>").fadeIn("slow");
+                                $('#info').show();
                             } else {
                                 $('#log').fadeOut("slow");
                                 $('#menu').fadeOut("slow").load('<c:url value="/resources/common/clientMenu.jsp"/>').fadeIn("slow");
-                                $('#info').html("Benvenuto nell'area clienti! " + mail).fadeIn("slow");
+                                $('#info').html("<p>Benvenuto nell'area clienti! " + mail
+                                        + "<br>Utilizzando il men&ugrave; alla tua sinistra potrai accedere alle "
+                                        + "funzionalit&agrave; del sito.</p>").fadeIn("slow");
+                                $('#info').show();
                             }
                         },
                         error: function(e) {
@@ -66,19 +83,16 @@
         </script>
     </head>
     <body>
-        <div id="finestra" title="Conferma?"></div>
+        <div id="finestra" title="Credenziali errate..."></div>
         <header>
             <%@include file="../../resources/common/header.html" %> 
         </header> 
         <article>
             <section>
-                <p class="hello">${message}</p>
-            </section>
-            <section>
                 <%@include file="../../resources/common/formLog.html" %>
-                <p id="info"></p>                
+                <section class="bordGreen" id="info" hidden="true"></section>                
             </section>
-                
+
         </article>
         <nav id="menu"> 
             ${menuType}

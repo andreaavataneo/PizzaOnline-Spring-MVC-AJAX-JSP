@@ -64,11 +64,12 @@ public class FormController {
         return returnText;
     }
 
-    @RequestMapping(value = "/ClientArea", method = RequestMethod.POST)
+   /* @RequestMapping(value = "/ClientArea", method = RequestMethod.POST)
     @ResponseBody
     public String order() {
         return null;
     }
+     */
 
     @RequestMapping(value = "/{act}/{id}/modify", method = RequestMethod.POST)
     @ResponseBody

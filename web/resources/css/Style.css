@@ -176,6 +176,7 @@ footer{
     -moz-border-radius: 10px; 
     -webkit-border-radius: 10px;
     border-radius: 10px;
+    border-color:#399630;
     width:33%;
     min-width:33%;
     margin: 0% 0% 0% 0%;
@@ -186,11 +187,12 @@ footer{
     text-align: center;
     -moz-border-radius: 10px; 
     -webkit-border-radius: 10px;
+    border-color:#399630;
     border-radius: 10px;
     width:49.5%;
     min-width:49.5%;
     margin: 0% 0% 0% 0%;
-    
+
 }
 
 .ordini table {
@@ -202,10 +204,23 @@ footer{
     margin-left: auto;
     margin-right: auto;
 }
-
+.bordGreen {
+    text-align: center;
+    -moz-border-radius: 10px; 
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    border:2px solid #399630;
+    margin-top:0.5em;
+}
 #middle {
     clear:both;
 }
+
+fieldset {
+    border-color: #399630;
+}
+
+
 /**
 #todayOrd {
     border: 3px red solid;

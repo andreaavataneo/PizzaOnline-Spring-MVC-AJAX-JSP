@@ -92,9 +92,6 @@
             <%@include file="../../resources/common/header.html" %>           
         </header>         
         <article>
-            <section>  
-                <p class="hello">${message}</p>  
-            </section>
             <section>
                 <%@include file="../../resources/common/formReg.jsp" %>
                 <p id="info"></p>

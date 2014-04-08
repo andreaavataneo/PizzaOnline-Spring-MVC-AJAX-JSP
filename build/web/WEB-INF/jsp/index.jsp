@@ -11,8 +11,8 @@
             <%@include file="../../resources/common/header.html" %>           
         </header>    
         <article>
-            <section>
-                <p class="hello">${helloMessage}</p>
+            <section class="bordGreen">
+                <p>${helloMessage}</p>
             </section>
             
                 ${menu}
