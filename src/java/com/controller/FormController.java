@@ -34,8 +34,7 @@ public class FormController {
         if (result.hasErrors()) {
             out = "Errore nell'interazione Ajax!";
         } else if (jdbc.logger(user)) {
-            out = "Hai effettuato l'accesso con successo! " + user.getEmail(); //successo 
-
+            out = "Hai effettuato l'accesso con successo! <br> Utenete: " + user.getEmail()+ "<br>"; //successo 
             if (user.getTypeRole().equals("admin")) {
                 out = "admin";
             }
@@ -59,17 +58,11 @@ public class FormController {
             returnText = "Inserimento effettuato con successo!";
         } else {
             returnText = "C'è già una registrazione con questa email!";
+            user.setEmail("ospite");
         }
 
         return returnText;
     }
-
-   /* @RequestMapping(value = "/ClientArea", method = RequestMethod.POST)
-    @ResponseBody
-    public String order() {
-        return null;
-    }
-     */
 
     @RequestMapping(value = "/{act}/{id}/modify", method = RequestMethod.POST)
     @ResponseBody
@@ -114,7 +107,6 @@ public class FormController {
     @RequestMapping(value = "/{datiURL}/createOrd", method = RequestMethod.POST)
     @ResponseBody
     public String createOrder(@PathVariable String datiURL, @ModelAttribute(value = "user") User user) throws ParseException {
-        String res = "";
         StringTokenizer st = new StringTokenizer(datiURL, "&");
         StringTokenizer st2 = new StringTokenizer(datiURL, "&");
         String temp = "";
@@ -140,8 +132,6 @@ public class FormController {
                 giorno = stringVal;
             }
         }
-        //res += orario + " " + giorno;
-
         while (st2.hasMoreTokens()) {
             temp = st2.nextToken();
             posU = temp.indexOf('=');
@@ -152,7 +142,6 @@ public class FormController {
                 numberId = Integer.parseInt(stringId);
                 if (!stringVal.equals("")) {
                     numberVal = Integer.parseInt(stringVal);
-                    //res = res + " : " + stringId + " : " + stringVal;
                     if (numberVal > 0) {
                         c++;
                         if (!jdbc.addOrder(user.getId_u(), numberId, numberVal, giorno, orario)) {
@@ -160,8 +149,6 @@ public class FormController {
                         }
                     }
                 }
-
-
             }
         }
         if (c != 0) {
@@ -189,6 +176,6 @@ public class FormController {
     @ResponseBody
     public void orderSend(@PathVariable String data, @PathVariable String ora, @ModelAttribute(value = "user") User user) {
         DB jdbc = new DB();
-        jdbc.sendOrder(data, ora);
+        jdbc.sendOrder(user.getId_u(), data, ora);
     }
 }

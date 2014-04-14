@@ -25,6 +25,13 @@ public class DB {
     private static final String us = "app";
     private static final String pwd = "app";
 
+    /**
+     * Converte la data dal formato americano a quello europeo (aggiungendo gli
+     * zeri dove necesario)
+     *
+     * @param data (USA)
+     * @return data convertita (EUR)
+     */
     public String convData(String data) {
         String conv = "";
         Calendar cal = Calendar.getInstance();
@@ -45,13 +52,13 @@ public class DB {
             sd = "0" + sd;
         }
 
-
         conv = sd + "-" + sm + "-" + cal.get(cal.YEAR);
         return conv;
     }
 
     /**
-     * Restituisce una tabella chiamata 'pizzalist' con le pizze appunto
+     * Restituisce il catalogo delle pizze Ogni pizza è contenuta in un
+     * <section>
      *
      * @return out
      */
@@ -80,7 +87,7 @@ public class DB {
     /**
      * Restituisce una linkedlist con i nomi di tutte le pizze nel DB
      *
-     * @return
+     * @return Map<Integer, String> allP
      */
     public Map listPizzas() {
         Map<Integer, String> allP = new HashMap<>();
@@ -100,6 +107,13 @@ public class DB {
         return allP;
     }
 
+    /**
+     * Dato un id_p di una pizza, restituisce una stringa contente i dati di
+     * quest'ultima separati da un '%'
+     *
+     * @param id_p
+     * @return out (stringa con i dati della pizza)
+     */
     public String getPizzaData(Integer id_p) {
         String out = "";
         try {
@@ -117,7 +131,7 @@ public class DB {
     }
 
     /**
-     * aggiunge una pizza assandogli i 3 campi
+     * Aggiunge una pizza assandogli i 3 campi passati come parametro
      *
      * @param nameP
      * @param recipe
@@ -128,17 +142,9 @@ public class DB {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
-
-            /*ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS WHERE nameP=" + nameP);
-             if (rs.next()) {
-             st.close();
-             conn.close();
-             return false;
-             } else {*/
             st.executeUpdate("INSERT INTO pizzas (nameP, recipe, price) VALUES ('" + nameP + "', '" + recipe + "', " + price + ")");
             st.close();
             conn.close();
-            //}
         } catch (SQLException e) {
             return false;
         }
@@ -146,7 +152,7 @@ public class DB {
     }
 
     /**
-     * Rimuove la pizza con id_p pasato come parametro
+     * Rimuove la pizza con id_p pasato come parametro (dalle pizze e da gli ordini)
      *
      * @param id_p
      */
@@ -156,6 +162,7 @@ public class DB {
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             st.executeUpdate("DELETE FROM pizzas WHERE ID_P=" + id_p);
+            st.executeUpdate("DELETE FROM orders WHERE ID_P=" + id_p);
             st.close();
             conn.close();
         } catch (SQLException e) {
@@ -165,7 +172,7 @@ public class DB {
     }
 
     /**
-     * modifica la pizza identificata dal id_p e ci assegna i nuovi campi
+     * Modifica la pizza identificata dal id_p e ci assegna i nuovi campi
      *
      * @param id_p
      * @param nameP
@@ -185,6 +192,13 @@ public class DB {
         }
     }
 
+    /**
+     * Cerca all'interno del DB l'user passato come parametro. In caso di
+     * successo, carica i relativi dati.
+     *
+     * @param user
+     * @return true/false
+     */
     public boolean logger(User user) {
         boolean out;
         try {
@@ -213,8 +227,13 @@ public class DB {
         return out;
     }
 
+    /**
+     * Aggiunge l'user passato come parametro al DB
+     *
+     * @param user
+     * @return true/false
+     */
     public boolean addUser(User user) {
-
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
@@ -229,7 +248,12 @@ public class DB {
         return true;
     }
 
-    //verfica che la mail inserita non sia già presente nel DB
+    /**
+     * Verfica che la mail inserita non sia già presente nel DB
+     *
+     * @param email
+     * @return true/false
+     */
     public boolean checkMail(String email) {
         boolean out;
         try {
@@ -252,7 +276,12 @@ public class DB {
         return out;
     }
 
-    //restituisce un form con il quale è possiblile effettuare un'ordinazione
+    /**
+     * Restituisce una stringa il cui contenuto è il form per la creazione di un
+     * nuovo ordine
+     *
+     * @return form 'newOrder'
+     */
     public String menuOrder() {
         String out = "";
         try {
@@ -260,27 +289,23 @@ public class DB {
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM PIZZAS");
-
             out = "<form id='newOrder'>"
                     + "<fieldset><legend>Crea nuovo ordine</legend>"
                     + "<table id='pizzalist'><tr><th>Pizza</th><th>Ricetta</th><th>Prezzo(€)</th><th>Ordine</th></tr>";
 
             while (rs.next()) {
-
                 out = out + "<tr><td>" + rs.getString("NAMEP") + "</td><td>" + rs.getString("RECIPE") + "</td><td>" + rs.getString("PRICE") + "</td><td><input type='number' name='q" + rs.getString("id_p") + "' id='q" + rs.getString("id_p") + "' value='0' min='0' max='99'/></td></tr>";
             }
+
             GregorianCalendar gc = new GregorianCalendar();
 
             out = out + "</table>"
-                    //+ "A che ora ? <input type='time' id='hour_time' name='hour_time' min='19:00' max='23:00'/>"
                     + "A che ora ?" + orariConsegne()
                     + "Quando ? <input type='date' id='dateo' name='dateo' "
                     + "min='" + gc.get(Calendar.YEAR) + "-" + gc.get(Calendar.MONTH) + "-" + gc.get(Calendar.DAY_OF_MONTH) + "'"
-                    //+ " value='"+ gc.get(Calendar.YEAR) + "-" + gc.get(Calendar.MONTH) + "-" + gc.get(Calendar.DAY_OF_MONTH) +"'"
                     + "/>"
                     + "<input type='submit' class='button' id='Ordina' value='Ordina'/>"
                     + "</fieldset></form>";
-
             st.close();
             conn.close();
         } catch (SQLException e) {
@@ -290,50 +315,13 @@ public class DB {
     }
 
     /**
-     * restituisce una tabella 'orderlist' con tutti gli ordini esistenti e
-     * tutte le possibili informazioni
+     * Restituisce tutti gli ordini futuri del cliente avente id_u passato nel
+     * parametro. Ogni ordine è contenuto in un <section> e contiene un pulsante
+     * 'Elimina' o 'Conferma' in base allo stato dell'ordine.
      *
-     * @return out
+     * @param id_u
+     * @return Stringa contenente ordini di id_u
      */
-    public String allOrders() {
-        String out;
-        try {
-            DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
-            Connection conn = DriverManager.getConnection(ur, us, pwd);
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery("select (select email from users where users.ID_U=orders.ID_U) as cliente,"
-                    + "(select address from users where users.ID_U=orders.ID_U) as destinazione,"
-                    + "(select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP,"
-                    + "numberOf, datao, hour_time, shipped, received  from orders "
-                    + "order by datao,hour_time,id_u");
-
-            out = "<table class=\"main\" id=\"orderlist\"><tr><td>Cliente</td><td>Destinazione</td><td>Pizza</td><td>Quante?</td><td>Data</td><td>Fascia Oraria</td><td>In viaggio?</td><td>Arrivata?</td></tr>";
-            while (rs.next()) {
-
-                out = out + "<tr><td>" + rs.getString("cliente") + "</td><td>" + rs.getString("destinazione") + "</td><td>" + rs.getString("nameP") + "</td><td>" + rs.getString("numberOf") + "</td><td>" + convData(rs.getString("datao")) + "</td><td>" + rs.getString("hour_time") + "</td><td>" + rs.getString("shipped") + "</td><td>" + rs.getString("received") + "</td></tr>";
-            }
-            out = out + "</table>";
-            st.close();
-            conn.close();
-        } catch (SQLException e) {
-            out = e.getMessage();
-        }
-        return out;
-
-    }
-
-    /**
-     * restituisce una tabella id='orderlist' con tutti gli ordini ancora da
-     * evadere
-     *
-     * @return out
-     */
-    /**
-     * restituisce una tabella id='clientOrders' con gli ordini di un
-     * determinato cliente (data >= a oggi)
-     *
-     */
-    //Aggiungere controllo per mettere dinamicamente elimina ordine o conferma ricezione !!!
     public String nextClientOrders(int id_u) {
         String result = "";
         try {
@@ -350,7 +338,7 @@ public class DB {
                 rs.close();
                 st.close();
                 conn.close();
-                return "<section class='ordini'></section>";
+                return result;
             }
             String dataOld = rs.getString("datao");
             String hourOld = rs.getString("hour_time");
@@ -424,6 +412,14 @@ public class DB {
 
     }
 
+    /**
+     * Restituisce tutti gli ordini odierni del cliente avente id_u passato nel
+     * parametro. Ogni ordine è contenuto in un <section> e contiene un pulsante
+     * 'Elimina' o 'Conferma' in base allo stato dell'ordine.
+     *
+     * @param id_u
+     * @return Stringa contenente ordini di id_u
+     */
     public String todayClientOrders(int id_u) {
         String result = "";
         try {
@@ -440,7 +436,7 @@ public class DB {
                 rs.close();
                 st.close();
                 conn.close();
-                return "<section class='ordini'></section>";
+                return result;
             }
             String dataOld = rs.getString("datao");
             String hourOld = rs.getString("hour_time");
@@ -514,18 +510,19 @@ public class DB {
     }
 
     /**
-     * imposta il valore di shipped a VERO in base ai 3 parametri id_u
+     * Registra la spedizione di un ordine identificato da i tre parametri
      *
      * @param id_u
      * @param datao
      * @param hour_time
      */
-    public void sendOrder(String datao, String hour_time) {
+    public void sendOrder(int id_u, String datao, String hour_time) {
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
             Connection conn = DriverManager.getConnection(ur, us, pwd);
             Statement st = conn.createStatement();
             st.executeUpdate("UPDATE orders SET shipped=true where "
+                    + "id_u=" + id_u + " AND "
                     + "datao='" + datao + "' AND "
                     + "hour_time='" + hour_time + "'");
             st.close();
@@ -535,7 +532,7 @@ public class DB {
     }
 
     /**
-     * conferma la ricezione di un ordine
+     * Conferma la ricezione di un ordine identificato da i tre parametri
      *
      * @param id_u
      * @param datao
@@ -556,6 +553,18 @@ public class DB {
         }
     }
 
+    /**
+     * Inserisce l'ordine di una tipologia di pizza all'interno del DB. I
+     * parametri richiesti sono i dati da inserire.
+     *
+     * @param id_u
+     * @param id_p
+     * @param numberOf
+     * @param datao
+     * @param hour_time
+     * @return true/flase
+     * @throws ParseException
+     */
     public boolean addOrder(int id_u, int id_p, int numberOf, String datao, String hour_time) throws ParseException {
 
         Calendar cal = Calendar.getInstance();
@@ -579,6 +588,13 @@ public class DB {
         return false;
     }
 
+    /**
+     * Cancella l'ordine identificato da i tre parametri
+     *
+     * @param id_u
+     * @param datao
+     * @param hour_time
+     */
     public void delOrder(int id_u, String datao, String hour_time) {
         try {
             DriverManager.registerDriver(new org.apache.derby.jdbc.ClientDriver());
@@ -591,6 +607,13 @@ public class DB {
         }
     }
 
+    /**
+     * Restituisci una stringa contenente tutti gli ordini da evadere oggi. Ogni
+     * ordine è conenuto in un <section> e contiene un bottone 'Spedisci' o
+     * 'Aspetta' in base allo stato dell'ordine.
+     *
+     * @return Ordini odierni da evadere
+     */
     public String todayTask() {
         String result = "";
         try {
@@ -599,7 +622,7 @@ public class DB {
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("select (select nameP from pizzas where pizzas.ID_P=orders.ID_P) as nameP,"
                     + "(select price from pizzas where pizzas.ID_P=orders.ID_P) as price,"
-                    + "numberOf, datao, hour_time, shipped, received, id_o, nameu, surname, address, phone from orders, users "
+                    + "numberOf, datao, hour_time, shipped, received, id_o, nameu, surname, address, phone, email from orders, users "
                     + "where users.id_u=orders.id_u AND datao = current_date AND received=false order by datao,hour_time");
 
             rs.next();
@@ -615,6 +638,7 @@ public class DB {
             }
             String dataOld = rs.getString("datao");
             String hourOld = rs.getString("hour_time");
+            String emailOld = rs.getString("email");
             int c = 1;
             double tot = 0;
             result += "<section class='ordini'>";
@@ -642,7 +666,7 @@ public class DB {
             tot += rs.getInt("numberOf") * rs.getDouble("price");
             while (rs.next()) {
 
-                if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time")))) {
+                if ((!dataOld.equals(rs.getString("datao"))) || (!hourOld.equals(rs.getString("hour_time"))) || (!emailOld.equals(rs.getString("email")))) {
                     c++;
                     result += "<tr><td>Totale</td><td>" + String.format("%.2f", tot) + " &euro;</td></tr>";
                     tot = 0;
@@ -687,6 +711,13 @@ public class DB {
         return result;
     }
 
+    /**
+     * Restituisci una stringa contenente tutti gli ordini futuri da evadere.
+     * Ogni giorno successivo è contenuto in un <section> e gli ordini sono
+     * riportati i tabelle
+     *
+     * @return Ordini odierni da evadere
+     */
     public String nextTask() {
         String result = "";
         try {
@@ -752,6 +783,10 @@ public class DB {
         return result;
     }
 
+    /**
+     * Restituisce la lista dei possibili orari di consegna.
+     * @return inout type select 
+     */
     private String orariConsegne() {
         return "<select id='hour_time' name='hour_time'>"
                 + "<option value='19:00'>19:00</option>"

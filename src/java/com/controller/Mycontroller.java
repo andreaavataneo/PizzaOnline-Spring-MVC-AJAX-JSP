@@ -23,13 +23,17 @@ import org.springframework.web.servlet.ModelAndView;
 @SessionAttributes("user")
 public class Mycontroller {
 
-    private String guestMenu = "<a href=\"index.htm\">Home</a>\n<a href=\"LogIn.htm\">Log In</a>"
-            + "\n<a href=\"addUser.htm\">Iscriviti</a>";
-    private String clientMenu = "<a href=\"index.htm\">Home</a>\n<a href=\"ClientArea.htm\">"
-            + "Area Clienti</a>\n<a href=\"LogOut.htm\">Log Out</a>";
-    private String adminMenu = "<a href=\"index.htm\">Home</a>\n<a href=\"ClientArea.htm\">Area Clienti</a>\n"
-            + "<a href=\"admin.htm\">Area Admin</a>\n<a href=\"orders.htm\">Area Ordini</a>\n"
-            + "<a href=\"LogOut.htm\">Log Out</a>";
+    private String guestMenu = "<a class='button' href=\"index.htm\">Home</a>\n"
+            + "<a class='button' href=\"LogIn.htm\">Log In</a>\n"
+            + "<a class='button' href=\"addUser.htm\">Iscriviti</a>";
+    private String clientMenu = "<a class='button' href=\"index.htm\">Home</a>\n"
+            + "<a class='button' href=\"ClientArea.htm\">Area Clienti</a>\n"
+            + "<a class='button' href=\"LogOut.htm\">Log Out</a>";
+    private String adminMenu = "<a class='button' href=\"index.htm\">Home</a>    \n"
+            + "<a class='button' href=\"ClientArea.htm\">Area Clienti</a>\n"
+            + "<a class='button' href=\"admin.htm\">Area Admin</a>\n"
+            + "<a class='button' href=\"orders.htm\">Area Ordini</a>\n"
+            + "<a class='button' href=\"LogOut.htm\">Log Out</a>";
 
     @ModelAttribute("user")
     public User getUserObject() {
@@ -41,17 +45,18 @@ public class Mycontroller {
         ModelAndView maw = new ModelAndView("index");
         DB jdbc = new DB();
         String menu = jdbc.showMenu();
-        String s = "Benvenuto nella Pizzeria Nico&amp;Andre, potrai consultare il men&ugrave; che offriamo.<br>Se vorrai effettuare"
-                + " un'ordinazione dovrai entrare nell'area clienti. Se non sei cliente, Registrati!";
+        String s = "Benvenuto nella Pizzeria Nico&amp;Andre, potrai consultare qui sotto il men&ugrave; che offriamo.<br>Se vorrai effettuare"
+                + " un'ordinazione dovrai entrare nell'area clienti. Se non sei cliente, Registrati!"
+                + "<br><br>I nostri fattorini consegnano dalle 19 alle 23 e siamo aperti tutti i giorni.";
         maw.addObject("helloMessage", s);
         maw.addObject("menu", menu);
         maw.addObject("session", user);
-        if (user.getEmail().equals("ospite")) {
-            maw.addObject("menuType", guestMenu);
+        if (user.getTypeRole().equals("admin")) {
+            maw.addObject("menuType", adminMenu);
         } else if (user.getTypeRole().equals("client")) {
             maw.addObject("menuType", clientMenu);
         } else {
-            maw.addObject("menuType", adminMenu);
+            maw.addObject("menuType", guestMenu);
         }
         return maw;
     }
@@ -60,7 +65,6 @@ public class Mycontroller {
     public ModelAndView logIn(@ModelAttribute(value = "user") User user) {
         ModelAndView maw = new ModelAndView("LogIn");
         if (user.getEmail().equals("ospite")) {
-            
             maw.addObject("menuType", guestMenu);
             maw.addObject("session", user);
             maw.addObject("user", new User()); //creo il bean necessario al form di LogIn e lo aggiungo al ModelAndView            
@@ -73,14 +77,12 @@ public class Mycontroller {
     @RequestMapping(value = "/addUser", method = RequestMethod.GET)
     public ModelAndView addUser(@ModelAttribute(value = "user") User user, @ModelAttribute(value = "s_user") User s_user) {
         ModelAndView maw = new ModelAndView();
-        maw.addObject("session", user);
-        maw.addObject("user", new User());
         if (user.getEmail().equals("ospite")) {
+            maw.addObject("session", user);
+            maw.addObject("user", new User());
             maw.addObject("menuType", guestMenu);
-        } else if (user.getTypeRole().equals("client")) {
-            maw.addObject("menuType", clientMenu);
         } else {
-            maw.addObject("menuType", adminMenu);
+            maw = welcome(user);
         }
         return maw;
     }
@@ -119,7 +121,7 @@ public class Mycontroller {
             DB jdbc = new DB();
             maw.addObject("allP", jdbc.listPizzas());
             maw.addObject("pizza", new Pizza());
-            maw.addObject("helloMessage", "Area riservata agli amministratori, aggiunta/modifica/rimozione pizze");
+            //maw.addObject("helloMessage", "Area riservata agli amministratori, aggiunta/modifica/rimozione pizze");
             maw.addObject("menuType", adminMenu);
         } else {
             maw = welcome(user);
@@ -135,11 +137,6 @@ public class Mycontroller {
             maw.addObject("todayTask", jdbc.todayTask());
             maw.addObject("nextTask", jdbc.nextTask());
             maw.addObject("menuType", adminMenu);
-            /*DB jdbc = new DB();
-             maw.addObject("allP", jdbc.listPizzas());
-             maw.addObject("pizza", new Pizza());
-             maw.addObject("helloMessage", "Area riservata agli amministratori, aggiunta/modifica/rimozione pizze");
-             */
         } else {
             maw = welcome(user);
         }

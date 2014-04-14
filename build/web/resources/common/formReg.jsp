@@ -21,6 +21,7 @@
             <dd><form:input path="address" id="addr" type="text" value="Indirizzo" required="on"/></dd>
             <dt><label for=email>Email: </label></dt>
             <dd><form:input path="email" id="email" type="email" value="Email" required="on"/></dd>
+            <dd><form:input path="typeRole" id="typeRole" type="hidden" value="guest" required="on"/></dd>
         </dl>
     </fieldset>
     <fieldset>
@@ -28,8 +29,8 @@
         <p hidden="true" class="error" id="name_err">Non hai inserito il nome!</p>
         <p hidden="true" class="error" id="surname_err">Non hai inserito il cognome!</p>
         <p hidden="true" class="error" id="pwd_err">Non hai inserto la password!</p>
-        <p hidden="true" class="error" id="phone_err">Non hai inserito il numero di telefono!</p>
+        <p hidden="true" class="error" id="phone_err">Il numero di telefono non &egrave; valido!</p>
         <p hidden="true" class="error" id="addr_err">Non hai inserito l'indirizzo!</p>
-        <p hidden="true" class="error" id="email_err">Non hai inserito l'email!</p>
+        <p hidden="true" class="error" id="email_err">L'email non &egrave; valida!</p>
     </fieldset>
 </form:form>

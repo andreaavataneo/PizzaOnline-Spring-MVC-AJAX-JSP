@@ -5,9 +5,9 @@
 --%>
 <section id="formAdm">
     <form:form commandName="pizza" id="formAddP"> 
-        <fieldset>
+        <fieldset id="moveD">
             <legend>Aggiungi, modifica o elimina una pizza</legend>
-            <dl> 
+            
                 <dt><label>Seleziona la pizza</label></dt>
                 <dd><form:select path="id" id="idSel" items="${allP}"/></dd>
                 <dt><label>Nome: </label></dt>
@@ -16,7 +16,7 @@
                 <dd><form:input path="description" id="description" autofocus="on" type="text" placeholder="Specifiche ingredienti" required="on"></form:input></dd>
                 <dt><label>Prezzo: </label></dt>
                 <dd><form:input path="price" id="price" type="number" required="on" autofocus="on"></form:input></dd>            
-            </dl>
+            
         </fieldset>
         <fieldset>
             <input class="button" id="aggiungere" type="button" value="Aggiungi pizza!"/>

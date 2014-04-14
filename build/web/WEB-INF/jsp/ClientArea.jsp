@@ -53,7 +53,6 @@
                     e.preventDefault();
                     var day = $(this).find('#datao').val();
                     var time = $(this).find('#hour_time').val();
-                    var questo = $(this);
                     $.ajax({
                         type: 'POST',
                         url: day + "/" + time + "/delOrd.htm",
@@ -80,7 +79,6 @@
                     e.preventDefault();
                     var day = $(this).find('#datao').val();
                     var time = $(this).find('#hour_time').val();
-
                     $.ajax({
                         type: 'POST',
                         url: day + "/" + time + "/conOrd.htm",
@@ -113,22 +111,12 @@
             <%@include file="../../resources/common/header.html" %>           
         </header>    
         <article>
-            <!--
-            <section>
-              <p>${message}</p>
-            </section>
-            !-->
             <section>
                 ${order}
-                <p id="info"></p>
             </section>
-            
-                ${todayClientOrders}
-            
+            ${todayClientOrders}
             <section id="middle"></section>
-            
-                ${nextClientOrders}
-            
+            ${nextClientOrders}
         </article>
         <nav id="menu"> 
             ${menuType}            
