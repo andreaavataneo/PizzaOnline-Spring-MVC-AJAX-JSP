@@ -130,7 +130,8 @@ nav a:hover {background: #ddd;}
     -webkit-box-shadow: 0 0 4px rgba(0,0,0, .75); 
     -moz-box-shadow: 0 0 4px rgba(0,0,0, .75); 
     box-shadow: 0 0 4px rgba(0,0,0, .75);
-    color:#f3f3f3; font-size:1.1em; 
+    color:#f3f3f3;
+    font-size:1.1em; 
     text-decoration:none; 
     font-family: fantasy; font-size: 130%;
 }
@@ -146,7 +147,8 @@ nav a:hover {background: #ddd;}
     -webkit-box-shadow: 0 0 4px rgba(0,0,0, .75); 
     -moz-box-shadow: 0 0 4px rgba(0,0,0, .75); 
     box-shadow: 0 0 4px rgba(0,0,0, .75);
-    color:#f3f3f3; font-size:1.1em; 
+    color:#f3f3f3;
+    font-size:1.1em; 
     text-decoration:none; 
     font-family: fantasy; 
     font-size: 130%;
@@ -225,6 +227,22 @@ fieldset {
 }
 
 
+ 
+
+#user_box {
+     background-image: url("../images/trasp_istr.png");
+     background-repeat: repeat;
+     border-radius: 10px;
+     border: 1px solid #33842A;
+     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.75);
+     color: green;
+     font-family: fantasy;
+     font-size: 90%;
+     margin: 0.5em 3% 0.5em 3%;
+     min-height: 2em;
+     padding: 1%;
+     text-align: center;
+}
 /**
 #todayOrd {
     border: 3px red solid;

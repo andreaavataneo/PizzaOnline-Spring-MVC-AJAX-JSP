@@ -46,18 +46,19 @@
     </head>
     <body>
         <div id="finestra" title="Consegna in corso ..."></div>
-        
-                
+
+
         <header>
             <%@include file="../../resources/common/header.html" %>           
         </header>    
         <article>
             ${todayTask}
             <section id="middle"></section>
-            ${nextTask}
+                ${nextTask}
         </article>
         <nav id="menu"> 
-            ${menuType}            
+            <%@include file="../../resources/common/user_box.jsp" %>
+            ${menuType}       
         </nav>
         <footer>
             <%@include file="../../resources/common/footer.jsp" %>

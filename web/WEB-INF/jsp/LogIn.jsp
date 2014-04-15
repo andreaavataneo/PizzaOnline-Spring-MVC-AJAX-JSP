@@ -95,10 +95,11 @@
 
         </article>
         <nav id="menu"> 
+            <%@include file="../../resources/common/user_box.jsp" %>
             ${menuType}
         </nav>
         <footer>
-            <%@include file="../../resources/common/footer.jsp" %>            
+            <%@include file="../../resources/common/footer.jsp" %>     
         </footer>
     </body>
 

@@ -111,7 +111,8 @@
             </section>
         </article>
         <nav id="menu"> 
-            ${menuType}            
+            <%@include file="../../resources/common/user_box.jsp" %>   
+            ${menuType}
         </nav>
         <footer>
             <%@include file="../../resources/common/footer.jsp" %>
